@@ -25,4 +25,4 @@
 
 ## IAM screenshot
 
-Upload a screenshot of the Google Cloud IAM page showing the partner and instructor access once it is ready.
+Screenshot: [iam-access.png](iam-access.png)
