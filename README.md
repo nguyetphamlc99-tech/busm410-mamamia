@@ -3,8 +3,8 @@
 ## Team
 
 - **Team name:** MamaMia
-- **Canvas team:** MamaMia (Canvas team number: pending)
-- **Team members:** Thi Pham and Buyka (`buyka19`)
+- **Canvas team:** MamaMia 
+- **Team members:** Nguyet Pham and Buyka 
 
 ## Dataset
 
