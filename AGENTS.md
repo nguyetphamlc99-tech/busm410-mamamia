@@ -1,55 +1,56 @@
 # AGENTS.md — MamaMia BUSM 410
 
-## Project purpose
-This repository contains the MamaMia team semester project for BUSM 410. The team uses Google BigQuery to analyze the public `thelook_ecommerce` dataset, document data quality checks, build analysis, and communicate findings.
+## Project
 
-## Project context
 - Team: MamaMia
-- Team members: Thi Pham and Buyka
-- Google Cloud / BigQuery project ID: `mamamia-busm-410`
-- Source dataset: `thelook_ecommerce`
-- Repository: `busm410-mamamia`
+- Team members: Nguyet Pham and Buyka
+- Dataset: `thelook_ecommerce`
+- BigQuery project ID: `mamamia-busm-410`
+- Repository: `nguyetphamlc99-tech/busm410-mamamia`
 
-## Instructions for AI coding agents
-1. Read `README.md`, `charter.md`, `audit_protocol.md`, and `audit_log.md` before making substantial changes.
-2. Keep work within this repository. Do not change unrelated projects, repositories, cloud resources, or access permissions.
-3. Explain planned changes in simple, clear English. Prefer small, reviewable edits over large rewrites.
-4. Do not invent query results, findings, team contributions, data-quality issues, or citations. Clearly label examples and assumptions.
-5. Never commit credentials, API keys, service-account JSON, tokens, private customer data, or other secrets. Do not expose sensitive information in logs.
-6. Ask before running queries that may incur significant BigQuery costs, changing IAM, deleting data, or publishing results.
-7. Use BigQuery Standard SQL. Prefer explicit column names, meaningful aliases, readable formatting, and comments explaining non-obvious logic.
-8. For exploratory queries, limit rows when practical and avoid `SELECT *` on large tables. Use fully qualified table names when necessary.
-9. Treat source tables as read-only unless a task explicitly authorizes modifications. Do not use destructive SQL without approval.
-10. Validate queries and calculations where access is available. If execution is unavailable, state that SQL was not run.
-11. Keep markdown concise and student-friendly; preserve the team's existing structure and assignment requirements.
-12. Do not overwrite a teammate's work without checking existing changes.
+The instructor example uses a different dataset and project. Follow its review process, but do not copy its dataset details, findings, or calculations into this project.
 
-## Repository structure
-- `README.md`: overview, team, dataset, and setup
-- `charter.md`: project scope and goals
-- `audit_protocol.md`: planned quality checks
-- `audit_log.md`: results and history of checks
-- `sql/`: saved BigQuery SQL queries
-- `model/`: analysis and model notes or results
-- `visuals/`: charts and visual explanations
-- `iam-access.png`: existing access screenshot; avoid exposing additional account details
+## Before starting substantial work
 
-## Expected workflow
-1. Understand the request and inspect relevant existing files.
-2. Propose a brief plan for any substantial change.
-3. Implement only the requested changes.
-4. Check formatting, SQL syntax, paths, and links.
-5. Summarize which files changed, what was verified, and what remains to be done.
+1. Read `README.md`, `charter.md`, `audit_protocol.md`, and the latest entries in `audit_log.md`.
+2. Remind the team to run `git pull` before applying changes.
+3. Explain the goal and proposed change in plain language. Keep changes small and reviewable.
+4. Confirm the work fits the team's project and checkpoint.
+5. Ask before changing IAM, deleting data, publishing results, or running a query that may incur significant cost.
 
-## Documentation and analysis standards
-- Document data source, query purpose, filters, date ranges, and important assumptions.
-- For data-quality checks, record the test, SQL used, observed result, interpretation, and follow-up in `audit_log.md`.
-- Distinguish descriptive findings from causal claims.
-- Include reproducible SQL or clear calculation steps for reported metrics.
-- Do not present unexecuted SQL as verified output.
+## BigQuery and SQL
 
-## Collaboration
-- Respect the contributions of both team members.
-- Prefer descriptive commit messages such as `Add order quality checks`.
-- Keep screenshots, charts, and documentation named clearly.
-- Ask for clarification when instructions conflict with the course assignment or existing project decisions.
+- Use BigQuery Standard SQL and read source tables only.
+- Confirm table and column names in BigQuery before suggesting them. Do not assume a schema for `thelook_ecommerce`.
+- Start with a query draft. Explain what one row represents, which columns are needed, and how the query answers the question. Let the team review the draft before saving or running it.
+- Ask the team to provide the BigQuery editor's estimated scan before running the query. Record the estimate in `sql/notes.md`.
+- Select only the columns needed. `LIMIT` does not reduce bytes scanned.
+- Never use destructive SQL unless the team explicitly authorizes it.
+- Do not describe a query as tested or its results as verified unless it was actually run and checked.
+- Save approved queries as `sql/NN_short_name.sql`. Each SQL file gets a one-line header; put purpose, estimated cost, results, and decisions in `sql/notes.md`.
+
+## Sources and findings
+
+- Support data claims with a source document and page, or with reproducible SQL and its results.
+- Say when a statement is an inference or assumption rather than a documented fact.
+- Separate descriptive findings from causal claims.
+- Do not invent results, data-quality issues, citations, assumptions, or team contributions.
+- Do not add credentials, API keys, service-account files, tokens, or private customer data to the repository.
+
+## Audit protocol and log
+
+- Use `audit_protocol.md` as the team's process for checking AI-assisted work.
+- If a new practice would improve the protocol, propose one short addition and get the team's agreement before editing it.
+- Use `audit_log.md` only to record meaningful human checks of the agent's work, such as catching an error, verifying a claim, or changing the analysis after review.
+- Do not log routine approvals, the agent's own checks, or checks of human work.
+- Before adding an entry, read earlier entries, find the next unused number, and show the proposed category and wording to the team. Add it only after approval. Never invent checks, results, dates, or sources.
+
+## Git and collaboration
+
+- The team runs every commit, merge, and push. Suggest when to commit and provide commands when useful.
+- Check for teammate changes before replacing or removing their work.
+- Keep changes within this repository. Do not change unrelated repositories or cloud resources.
+
+## Wrap up
+
+After making an approved change, check formatting, links, paths, and SQL syntax when possible. Summarize the files changed, what was checked, and what still needs team input. If a query could not be run, say so.
