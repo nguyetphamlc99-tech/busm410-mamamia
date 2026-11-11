@@ -1,45 +1,39 @@
-# Charter: Accessories Time-to-Sell Gap
+# Charter: Country Revenue Concentration
 
 ## Project question
 
-Among inventory items that were sold, how did the average time from item creation to sale change for Accessories compared with Dresses across the 2023–2026 creation-year cohorts?
+How concentrated is recorded order-item revenue across customer countries, and did the share from the three highest-revenue countries change from 2023 to 2025?
 
 ## The gap
 
-The results supplied for this query show that Accessories remained close to 29 days to sell, while Dresses decreased from 30.03 days in the 2023 cohort to 28.10 days in the 2026 cohort.
+In the country-year results supplied by the team, China, the United States, and Brasil together account for about 70% of the recorded revenue in both comparison years. Their share changed only slightly, from 69.9% in 2023 to 70.4% in 2025.
 
-| Category | Creation year | Average days to sell | Sold inventory-item rows |
-|---|---:|---:|---:|
-| Accessories | 2023 | 29.09 | 1,028 |
-| Accessories | 2024 | 29.84 | 1,502 |
-| Accessories | 2025 | 29.60 | 2,249 |
-| Accessories | 2026 | 29.00 | 3,379 |
-| Dresses | 2023 | 30.03 | 565 |
-| Dresses | 2024 | 29.28 | 829 |
-| Dresses | 2025 | 29.50 | 1,255 |
-| Dresses | 2026 | 28.10 | 1,853 |
+| Year | China | United States | Brasil | Top-three total | Total of country rows shared | Top-three share |
+|---:|---:|---:|---:|---:|---:|---:|
+| 2023 | 377,455.28 | 264,197.77 | 155,230.69 | 796,883.74 | 1,139,791.91 | 69.9% |
+| 2025 | 786,711.91 | 546,520.53 | 346,811.45 | 1,680,043.89 | 2,385,947.97 | 70.4% |
 
-From 2023 to 2026, the average decreased by 0.09 days for Accessories and 1.93 days for Dresses. In the 2026 cohorts shown, Accessories averaged 0.90 days longer to sell than Dresses. This is a descriptive difference; the query does not explain why it occurred.
+China's recorded revenue was about 240,191.38 higher than the United States in 2025. The absolute difference was larger than in 2023, but the relative lead was similar: China was about 43% above the United States in both years. The results show revenue concentration; they do not explain its cause.
 
 ## Measure and unit of analysis
 
-The source is `bigquery-public-data.thelook_ecommerce.inventory_items`. Each result row represents one product category and inventory-item creation year. The average is calculated as `AVG(TIMESTAMP_DIFF(sold_at, created_at, DAY))` for rows where `sold_at` is not null. The count is the number of sold inventory-item records in that creation-year cohort.
+The source tables are `bigquery-public-data.thelook_ecommerce.order_items` and `bigquery-public-data.thelook_ecommerce.users`. The query joins each order-item row to its user by `user_id = id`, groups by `users.country` and the year of `order_items.created_at`, and sums `order_items.sale_price`.
 
-This is an average time-to-sell measure. It is not the standard inventory-turnover ratio. It also excludes items that had not sold, so it describes sold items only.
+One result row represents one user country in one order-item creation year. The country is the user's recorded country, not necessarily the item's shipping or delivery destination.
 
-## Comparator
+## Comparison
 
-Dresses is an internal comparison category, not an external industry benchmark or a proven target. The categories may differ in product mix, price, or other factors. The comparison does not show that logistics, demand, or fulfillment caused the difference.
+The three highest-revenue countries are compared with the remaining countries in the supplied results. This is an internal comparison, not an industry benchmark or target. No target revenue share was provided.
 
 ## Potential value
 
-In the 2026 results supplied, the 0.90-day average difference across 3,379 sold Accessories records corresponds to about 3,041 inventory-item-days (0.90 × 3,379). This is an illustration of the size of the observed gap, not a proven improvement opportunity or dollar saving.
-
-The query does not provide item cost, inventory value, or a sourced carrying-cost rate, so this charter does not estimate financial savings. The suggested $45 price and 20% annual carrying-cost assumptions need sources and validation before they can support a dollar estimate.
+The results show that a large share of recorded order-item revenue is associated with three user countries. This can guide a follow-up question about whether that concentration comes from more customers, more orders, or higher spending per customer. The current query does not measure profit, customer counts, order counts, or the reason for the differences, so it does not establish which countries are more successful or where the team should invest.
 
 ## Limits and next checks
 
-- The query includes only rows with `sold_at` populated. Unsold inventory is excluded; this can make recent cohorts look faster because items that have not sold yet are not included.
-- The 2026 cohort may be incomplete. Confirm the dataset's latest date before comparing it with prior years.
-- The submitted result excerpt contains Accessories and Dresses. The query also filters for Swimwear and Outerwear; include those results too if they were returned, or state why the write-up focuses on these two categories.
-- Before recommending a cause or action, review the data coverage and agree on further checks that the available tables and fields can support.
+- The totals and shares above were calculated from the country rows supplied by the team. Confirm the results include every country group, including any blank or null country group.
+- The query sums `sale_price` without filtering order-item status or returns. Describe it as the sum of recorded order-item sale prices, not net revenue or profit.
+- The query uses the user's country, not shipping destination.
+- 2026 may be an incomplete year, so this comparison uses 2023 and 2025.
+- Before calling the values dollars, confirm the unit/currency for `sale_price` in the dataset documentation.
+- To explain the concentration, a follow-up analysis should compare order counts and customer counts by country before drawing conclusions.
