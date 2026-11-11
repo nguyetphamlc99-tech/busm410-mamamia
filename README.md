@@ -31,6 +31,7 @@ BigQuery results show China, the United States, and Brasil generated 1,680,043.8
 | [visuals/gap_chart.png](visuals/gap_chart.png) | 2023 and 2025 revenue-share comparison |
 | [Other/README.md](Other/README.md) | Dataset documentation links and table notes |
 | [Other/thelook_revenue_erd.dbml](Other/thelook_revenue_erd.dbml) | Source for the table relationship diagram |
+| [Other/table_diagram.pdf](Other/table_diagram.pdf) | Printable table relationship diagram |
 | [Other/table_diagram.png](Other/table_diagram.png) | Diagram of tables and join |
 | [Other/audit_protocol.md](Other/audit_protocol.md) | Draft process for reviewing AI-assisted work |
 | [Other/audit_log.md](Other/audit_log.md) | Human audit records; entries are added after team approval |

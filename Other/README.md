@@ -21,4 +21,6 @@ The analysis joins `order_items.user_id` to `users.id`. The query uses an inner 
 
 ![Tables and join](table_diagram.png)
 
+[Printable table diagram (PDF)](table_diagram.pdf)
+
 The editable DBML source is [thelook_revenue_erd.dbml](thelook_revenue_erd.dbml).
