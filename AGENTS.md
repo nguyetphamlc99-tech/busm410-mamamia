@@ -33,7 +33,7 @@ The peer benchmark is all other country groups returned by the query in the same
 - Use `sale_price` as recorded in the source. Do not call the result dollars until the currency/unit is confirmed in dataset documentation.
 - The current query includes every joined order-item row; it has no status or return filter. Describe the metric as summed recorded order-item `sale_price`, not net revenue or profit.
 - The query uses an inner join. Check unmatched `user_id` values and country blanks before interpreting totals.
-- Both data-quality statements ran successfully (7.23 MB and 1.38 MB processed). The year-coverage result shows 66,265 rows in 2026 and a latest timestamp of 2026-11-14 23:48:20 UTC; the screenshot is dated 2026-11-11, so this timestamp appears future-dated. The first statement's diagnostic counts still need review. Do not claim the data passed all checks or filter the timestamp without investigation.
+- Both data-quality statements ran successfully (7.23 MB and 1.38 MB processed). The year-coverage result shows 66,265 rows in 2026 and a latest timestamp of 2026-11-14 23:48:20 UTC; the screenshot is dated 2026-11-11, so this timestamp appears future-dated. The diagnostic output shows 1,582 future `created_at` values and zero for the other nine checks. Investigate the future timestamps; do not filter them automatically.
 - Do not remove or deduplicate records without reviewing what the records represent and documenting the rule.
 - Omit 2026 from the comparison because it may be a partial year.
 - Treat the analysis as descriptive. It does not establish why revenue is concentrated or quantify a financial loss.

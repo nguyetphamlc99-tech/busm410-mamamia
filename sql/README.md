@@ -8,7 +8,7 @@ This folder contains the SQL used to check the fields, reproduce the user-countr
 
 Checks the key fields used by the analysis for duplicate IDs, missing IDs and join keys, blank country values, null or future creation timestamps, null or negative sale prices, and order items with no matching user. A second result shows row counts and latest creation time by year so the team can assess date coverage, especially 2026.
 
-**Run status:** BigQuery shows both statements completed successfully. The diagnostic statement processed **7.23 MB**; the year-coverage statement processed **1.38 MB**. The year-coverage result is transcribed below. The first statement's diagnostic counts have not been shared yet, so the quality checks are not complete. Do not automatically remove duplicates, blanks, or unmatched rows; first determine what they represent.
+**Run status:** BigQuery shows both statements completed successfully. The diagnostic statement processed **7.23 MB**; the year-coverage statement processed **1.38 MB**. The year-coverage result is transcribed below. The first statement's results are transcribed below. One check is nonzero and needs interpretation; the other nine returned zero. Do not automatically remove duplicates, blanks, or unmatched rows; first determine what they represent.
 
 **Year-coverage output:** The screenshot shows the latest `created_at` and row count by year:
 
@@ -23,7 +23,24 @@ Checks the key fields used by the analysis for duplicate IDs, missing IDs and jo
 | 2020 | 4,778 | 2020-12-31 22:47:08 |
 | 2019 | 1,401 | 2019-12-31 23:29:37 |
 
-The screenshot is dated 2026-11-11, but the latest 2026 timestamp is 2026-11-14, so it appears future-dated relative to the run. Check the first statement's `future order_items.created_at` count and discuss this before filtering anything. The 2026 row is excluded from the project's year comparison because it is the current, potentially incomplete year.
+The latest 2026 timestamp (2026-11-14 23:48:20 UTC) is later than the screenshot date (2026-11-11), so it appears future-dated relative to the run. The 2026 row is excluded from the project's year comparison because it is the current, potentially incomplete year.
+
+**Data-quality output:** The screenshot shows 1,582 future `order_items.created_at` values. Each of the other nine checks returned zero:
+
+| Check | Observed count |
+|---|---:|
+| Blank or null `users.country` | 0 |
+| Duplicate `order_items.id` | 0 |
+| Duplicate `users.id` | 0 |
+| Null or negative `order_items.sale_price` | 0 |
+| Null `order_items.created_at` | 0 |
+| Null `order_items.id` | 0 |
+| Null `order_items.user_id` | 0 |
+| Null `users.id` | 0 |
+| Order items with unmatched user | 0 |
+| Future `order_items.created_at` | 1,582 |
+
+Do not delete or filter these records automatically. Investigate why the source contains future-dated timestamps. They do not enter the 2023 or 2025 comparison unless a query's year filter changes.
 
 ### `02_country_revenue_by_year.sql`
 
@@ -51,7 +68,7 @@ An earlier exploratory query about elapsed days from inventory creation to sale,
 - The inner join excludes order items without a matching user. The quality check reports this so the team can decide whether it affects the results.
 - A blank or null user country may form a separate group in BigQuery. Keep it visible while checking completeness; do not silently remove it from the denominator.
 - Duplicate `order_items.id` or `users.id` values could change totals or multiply rows in the join. Inspect any duplicates before choosing a treatment.
-- Negative or null `sale_price`, null/future `created_at`, and incomplete recent-year coverage need review. The result counts from the diagnostic query have not yet been shared or recorded.
+- The diagnostic output shows zero duplicate IDs, blank/null user country, missing IDs or join keys, unmatched users, null timestamps, and null/negative prices. It shows 1,582 future timestamps, which need investigation before deciding whether further cleaning is needed.
 - No status or return exclusion is made, so the measure is recorded item sale price, not net revenue or profit.
 - The country field is sourced from `users.country`; it is not a shipping destination.
 - Use 2023 and 2025 for comparison; 2026 may be incomplete.
