@@ -21,7 +21,7 @@ This shows a persistent concentration in the same three countries. It does not e
 
 The 2025 value represented by the top-three group is **1,680,043.89 recorded `sale_price` units**, based on the BigQuery concentration query. Its share of the query's total is:
 
-`1,680,043.891806 / 2,385,947.972455… × 100 = 70.41%`
+`1,680,043.89 ÷ 2,385,947.97 × 100 = 70.41%`
 
 This measures the amount of recorded sale price associated with the three leading user countries. It is not profit, lost revenue, or an estimated financial benefit from changing strategy. The dataset's currency/unit has not yet been confirmed, so the figures are not labeled as dollars.
 

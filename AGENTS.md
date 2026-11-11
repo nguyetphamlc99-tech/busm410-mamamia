@@ -21,7 +21,7 @@
 
 The team ran the numbered revenue queries in BigQuery. The assistant did not run them. The result screenshots show the 2023 and 2025 top-three summary below; the rounded figures agree with [the team's Google Sheet](https://docs.google.com/spreadsheets/d/1rDDExt7Uf89crvoLI5ZjTG0p1JqFMs49nnnk2eYQmJY/edit?gid=1679571377#gid=1679571377) at the displayed precision.
 
-| Year | Top three (China, United States, Brasil) | Total of country rows supplied | Top-three share | Other-country share |
+| Year | Top three (China, United States, Brasil) | Total across joined country groups | Top-three share | Other-country share |
 |---:|---:|---:|---:|---:|
 | 2023 | 796,883.74 | 1,139,791.91 | 69.91% | 30.09% |
 | 2025 | 1,680,043.89 | 2,385,947.97 | 70.41% | 29.59% |
