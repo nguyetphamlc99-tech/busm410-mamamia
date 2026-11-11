@@ -3,7 +3,7 @@
 ## Team
 
 - **Team name:** MamaMia
-- **Canvas team:** MamaMia
+- **Canvas team number:** Not recorded yet; add the numeric team number from Canvas
 - **Team members:** Nguyet Pham and Buyka
 
 ## Dataset
