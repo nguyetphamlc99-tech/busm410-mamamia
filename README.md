@@ -3,7 +3,7 @@
 ## Team
 
 - **Fun team name:** MamaMia
-- **Canvas team:** Add the numeric Canvas team number
+- **Canvas team:** ManaMia
 - **Team members:** Nguyet Pham and Buyka
 
 ## Dataset and project
