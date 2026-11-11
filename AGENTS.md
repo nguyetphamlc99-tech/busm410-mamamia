@@ -1,56 +1,83 @@
 # AGENTS.md — MamaMia BUSM 410
 
-## Project
+## Project facts
 
-- Team: MamaMia
-- Team members: Nguyet Pham and Buyka
-- Dataset: `thelook_ecommerce`
-- BigQuery project ID: `mamamia-busm-410`
-- Repository: `nguyetphamlc99-tech/busm410-mamamia`
+- **Team:** MamaMia
+- **Members:** Nguyet Pham and Buyka
+- **Dataset:** `bigquery-public-data.thelook_ecommerce`
+- **BigQuery project ID:** `mamamia-busm-410`
+- **Repository:** `nguyetphamlc99-tech/busm410-mamamia`
+- **Current analysis:** Country-level concentration in order-item sale-price totals.
 
-The instructor example uses a different dataset and project. Follow its review process, but do not copy its dataset details, findings, or calculations into this project.
+### Tables, columns, and grain
+
+- `order_items`: analysis uses `id`, `user_id`, `created_at`, and `sale_price`. One source row is an order-item record; the revenue query aggregates these records by year of `created_at`.
+- `users`: analysis uses `id` and `country`. The country is the user's recorded country, not confirmed shipping destination.
+- Join: `order_items.user_id = users.id`.
+- One output row represents one user-country group in one order-item creation year.
+- Confirm exact column descriptions and types in BigQuery before relying on them. See [Other/README.md](Other/README.md).
+
+### Gap and benchmark facts
+
+The team supplied country-year results in [this Google Sheet](https://docs.google.com/spreadsheets/d/1rDDExt7Uf89crvoLI5ZjTG0p1JqFMs49nnnk2eYQmJY/edit?gid=1679571377#gid=1679571377). The assistant has not independently rerun the query.
+
+| Year | Top three (China, United States, Brasil) | Total of country rows supplied | Top-three share | Other-country share |
+|---:|---:|---:|---:|---:|
+| 2023 | 796,883.7407 | 1,139,791.91095353 | 69.9% | 30.1% |
+| 2025 | 1,680,043.8917 | 2,385,947.9724193 | 70.4% | 29.6% |
+
+The peer benchmark is all other country groups in the same year. In 2025 the top-three share exceeds the remaining-country share by 40.8 percentage points. The top-three share increased by 0.5 percentage points from 2023 to 2025. These numbers use only the country rows supplied; verify that all country groups are present before treating them as final.
+
+### Cleaning and interpretation rules
+
+- Use `sale_price` as recorded in the source. Do not call the result dollars until the currency/unit is confirmed in dataset documentation.
+- The current query includes every joined order-item row; it has no status or return filter. Describe the metric as summed recorded order-item `sale_price`, not net revenue or profit.
+- The query uses an inner join. Check unmatched `user_id` values and country blanks before interpreting totals.
+- Run the data-quality query for duplicate IDs, missing values, negative prices, future timestamps, unmatched users, and year coverage. Those checks are pending until run in BigQuery; do not imply that the data passed them.
+- Do not remove or deduplicate records without reviewing what the records represent and documenting the rule.
+- Omit 2026 from the comparison because it may be a partial year.
+- Treat the analysis as descriptive. It does not establish why revenue is concentrated or quantify a financial loss.
 
 ## Before starting substantial work
 
-1. Read `README.md`, `charter.md`, `audit_protocol.md`, and the latest entries in `audit_log.md`.
-2. Remind the team to run `git pull` before applying changes.
-3. Explain the goal and proposed change in plain language. Keep changes small and reviewable.
-4. Confirm the work fits the team's project and checkpoint.
+1. Read `README.md`, `charter.md`, `Other/audit_protocol.md`, and the latest entries in `Other/audit_log.md`.
+2. Remind the team to run `git pull` before local edits.
+3. Explain the goal and proposed change. Keep changes small and reviewable.
+4. Confirm the work fits the project and checkpoint.
 5. Ask before changing IAM, deleting data, publishing results, or running a query that may incur significant cost.
 
 ## BigQuery and SQL
 
 - Use BigQuery Standard SQL and read source tables only.
-- Confirm table and column names in BigQuery before suggesting them. Do not assume a schema for `thelook_ecommerce`.
-- Start with a query draft. Explain what one row represents, which columns are needed, and how the query answers the question. Let the team review the draft before saving or running it.
-- Ask the team to provide the BigQuery editor's estimated scan before running the query. Record the estimate in `sql/notes.md`.
+- Confirm schema in BigQuery. Do not assume undocumented fields or meanings.
+- Explain each query's purpose, row grain, columns, and expected output before use.
+- Ask the team for BigQuery's estimated bytes before a potentially costly query; record estimates in `sql/README.md`.
 - Select only the columns needed. `LIMIT` does not reduce bytes scanned.
-- Never use destructive SQL unless the team explicitly authorizes it.
-- Do not describe a query as tested or its results as verified unless it was actually run and checked.
-- Save approved queries as `sql/NN_short_name.sql`. Each SQL file gets a one-line header; put purpose, estimated cost, results, and decisions in `sql/notes.md`.
+- Never use destructive SQL unless explicitly authorized.
+- Do not describe a query as run, tested, or verified unless it was actually run and checked.
+- Save numbered queries as `sql/NN_short_name.sql`. Each starts with a short comment linking to `sql/README.md`.
 
 ## Sources and findings
 
-- Support data claims with a source document and page, or with reproducible SQL and its results.
-- Say when a statement is an inference or assumption rather than a documented fact.
+- Support data claims with documentation and reproducible SQL/results.
+- Distinguish facts from assumptions and inference.
 - Separate descriptive findings from causal claims.
-- Do not invent results, data-quality issues, citations, assumptions, or team contributions.
-- Do not add credentials, API keys, service-account files, tokens, or private customer data to the repository.
+- Do not invent results, quality-check outcomes, sources, or team contributions.
+- Do not add credentials, keys, tokens, service-account files, or private data.
 
 ## Audit protocol and log
 
-- Use `audit_protocol.md` as the team's process for checking AI-assisted work.
-- If a new practice would improve the protocol, propose one short addition and get the team's agreement before editing it.
-- Use `audit_log.md` only to record meaningful human checks of the agent's work, such as catching an error, verifying a claim, or changing the analysis after review.
+- Treat `Other/audit_protocol.md` as a draft until the team reviews and agrees to it.
+- Use `Other/audit_log.md` only for meaningful human checks of agent work.
 - Do not log routine approvals, the agent's own checks, or checks of human work.
-- Before adding an entry, read earlier entries, find the next unused number, and show the proposed category and wording to the team. Add it only after approval. Never invent checks, results, dates, or sources.
+- Before an entry, read the log, find the next unused number, and show the proposed category and wording to the team. Add only after approval.
+- Never invent checks, results, dates, or sources.
 
 ## Git and collaboration
 
-- The team runs every commit, merge, and push. Suggest when to commit and provide commands when useful.
-- Check for teammate changes before replacing or removing their work.
-- Keep changes within this repository. Do not change unrelated repositories or cloud resources.
+- The team runs commits, merges, and pushes from a local checkout. Check for teammate changes before replacing work.
+- Keep changes within this repository.
 
 ## Wrap up
 
-After making an approved change, check formatting, links, paths, and SQL syntax when possible. Summarize the files changed, what was checked, and what still needs team input. If a query could not be run, say so.
+Check formatting, links, paths, and SQL syntax when possible. Summarize what changed, what was checked, and what still needs team input. If a query could not be run, say so.

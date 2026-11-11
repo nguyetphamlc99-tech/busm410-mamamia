@@ -1,4 +1,4 @@
--- Step 1: Compare average days to sell by category and inventory creation year. See sql/notes.md for notes.
+-- Earlier exploratory analysis retained for context; it is outside the current country revenue gap (see sql/README.md).
 SELECT
   product_category,
   EXTRACT(YEAR FROM created_at) AS year,

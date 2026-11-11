@@ -1,4 +1,4 @@
--- Step 2: Summarize order-item sale price by user country and creation year. See sql/notes.md for notes.
+-- Reproduces the team-provided country-year totals; see interpretation and validation notes in sql/README.md.
 SELECT
   u.country AS region,
   EXTRACT(YEAR FROM oi.created_at) AS year,

@@ -1,0 +1,11 @@
+Table users {
+  id INT64 [pk, note: 'User identifier; confirm type and meaning in BigQuery schema']
+  country STRING [note: 'User country field used for grouping']
+}
+
+Table order_items {
+  id INT64 [pk, note: 'Order-item identifier; confirm uniqueness in BigQuery']
+  user_id INT64 [ref: > users.id, note: 'Join key to users']
+  created_at TIMESTAMP [note: 'Used to assign order-item creation year']
+  sale_price FLOAT64 [note: 'Summed by country and year; confirm unit/currency']
+}
