@@ -3,12 +3,12 @@
 ## Team
 
 - **Team name:** MamaMia
-- **Canvas team:** MamaMia 
-- **Team members:** Nguyet Pham and Buyka 
+- **Canvas team:** MamaMia
+- **Team members:** Nguyet Pham and Buyka
 
 ## Dataset
 
-- **Dataset:** `thelook_ecommerce`
+- **Dataset:** `bigquery-public-data.thelook_ecommerce`
 
 ## Google Cloud
 
@@ -16,10 +16,11 @@
 
 ## Repository contents
 
-- `charter.md` — project gap write-up (to be completed at CP1)
-- `audit_protocol.md` — checking plan (to be completed at CP1)
-- `audit_log.md` — running list of checks
-- `sql/` — queries
+- `AGENTS.md` — project instructions for AI-assisted work
+- `charter.md` — CP1 project gap write-up
+- `audit_protocol.md` — checking plan
+- `audit_log.md` — running list of human checks
+- `sql/` — queries and query notes
 - `model/` — model results
 - `visuals/` — charts
 
