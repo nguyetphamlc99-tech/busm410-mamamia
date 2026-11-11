@@ -2,7 +2,7 @@
 
 This log records meaningful human checks of the agent's work. It does not record routine approvals, the agent's own checks, or the team's work that was not a check of the agent.
 
-No entries have been recorded yet. Add an entry only after a team member reviews and approves its wording.
+Entries are added after a team member reviews and approves the wording. The current entry confirms query execution only; it does not establish that the data passed the quality checks.
 
 ## Summary
 
