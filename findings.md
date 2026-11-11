@@ -35,6 +35,6 @@ This measures the amount of recorded sale price associated with the three leadin
 
 - The team ran the concentration query; the assistant did not execute it. BigQuery screenshots confirm the summary results shown above.
 - The concentration query includes country groups returned by the inner join, including a null-country group if present. Review the data-quality results to understand missing and unmatched records.
-- The diagnostic statements ran successfully and processed 7.23 MB and 1.38 MB, but their result rows have not yet been reviewed. Check duplicate IDs, blank countries, unmatched users, missing or future timestamps, negative prices, and year coverage.
+- The year-coverage result shows 66,265 order-item rows in 2026 and a latest timestamp of 2026-11-14 23:48:20 UTC, later than the screenshot date of 2026-11-11. Review the first diagnostic result for the future-timestamp count before deciding what to do. Duplicate IDs, blank countries, unmatched users, null or negative values, and the future timestamp still need interpretation.
 - The query sums `sale_price` without filtering order-item status or returns, so call this a recorded order-item sale-price total, not net revenue or profit.
 - Confirm the unit/currency before describing these values as money.

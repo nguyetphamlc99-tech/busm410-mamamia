@@ -8,7 +8,22 @@ This folder contains the SQL used to check the fields, reproduce the user-countr
 
 Checks the key fields used by the analysis for duplicate IDs, missing IDs and join keys, blank country values, null or future creation timestamps, null or negative sale prices, and order items with no matching user. A second result shows row counts and latest creation time by year so the team can assess date coverage, especially 2026.
 
-**Run status:** The team's BigQuery screenshots show both statements completed successfully. The diagnostic statement processed **7.23 MB**; the year-coverage statement processed **1.38 MB**. The screenshots show job status and bytes processed, but not the result rows. Record the returned counts and year coverage here after opening **View results** for each statement. Until those values are reviewed, do not treat the checks as passed. Do not automatically remove duplicates, blanks, or unmatched rows; first determine what they represent.
+**Run status:** BigQuery shows both statements completed successfully. The diagnostic statement processed **7.23 MB**; the year-coverage statement processed **1.38 MB**. The year-coverage result is transcribed below. The first statement's diagnostic counts have not been shared yet, so the quality checks are not complete. Do not automatically remove duplicates, blanks, or unmatched rows; first determine what they represent.
+
+**Year-coverage output:** The screenshot shows the latest `created_at` and row count by year:
+
+| Year | Order-item rows | Latest `created_at` (UTC) |
+|---:|---:|---|
+| 2026 | 66,265 | 2026-11-14 23:48:20.880067 |
+| 2025 | 39,970 | 2025-12-31 23:58:42 |
+| 2024 | 27,840 | 2024-12-31 23:52:41 |
+| 2023 | 19,254 | 2023-12-31 23:53:08 |
+| 2022 | 13,086 | 2022-12-31 23:30:25 |
+| 2021 | 8,455 | 2021-12-31 23:53:14 |
+| 2020 | 4,778 | 2020-12-31 22:47:08 |
+| 2019 | 1,401 | 2019-12-31 23:29:37 |
+
+The screenshot is dated 2026-11-11, but the latest 2026 timestamp is 2026-11-14, so it appears future-dated relative to the run. Check the first statement's `future order_items.created_at` count and discuss this before filtering anything. The 2026 row is excluded from the project's year comparison because it is the current, potentially incomplete year.
 
 ### `02_country_revenue_by_year.sql`
 
