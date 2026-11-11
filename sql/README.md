@@ -14,7 +14,7 @@ Checks the key fields used by the analysis for duplicate IDs, missing IDs and jo
 
 Reproduces the team's query: inner join `order_items.user_id = users.id`, group by `users.country` and the year of `order_items.created_at`, and sum `order_items.sale_price`. One result row is one user-country group and year. No status or return filter is applied.
 
-The team shared the output in [Google Sheets](https://docs.google.com/spreadsheets/d/1rDDExt7Uf89crvoLI5ZjTG0p1JqFMs49nnnk2eYQmJY/edit?gid=1679571377#gid=1679571377). The assistant has not run this query or independently confirmed its output. The BigQuery estimated and processed bytes were not provided; add them after checking and running the query.
+The team shared the output in [Google Sheets](https://docs.google.com/spreadsheets/d/1rDDExt7Uf89crvoLI5ZjTG0p1JqFMs49nnnk2eYQmJY/edit?gid=1679571377#gid=1679571377) and ran this query in BigQuery. The result screenshot shows country-year rows, including 2026; the assistant did not run the query. The job's estimated and processed bytes were not included in the screenshot.
 
 ### `03_top_three_concentration.sql`
 
@@ -24,7 +24,7 @@ Aggregates the country-year totals, ranks countries within each year by sale-pri
 - Remaining-country share = 100 − top-three share.
 - Difference = top-three share − remaining-country share.
 
-The findings use the rows supplied by the team to illustrate the calculation. The ranked query should be run to confirm those values and ensure that all country groups, including any null-country group, are represented.
+The team ran the ranked query in BigQuery. Its result screenshot shows 2023 top-three share **69.91%**, remaining share **30.09%**, and difference **39.83 percentage points**; for 2025 it shows **70.41%**, **29.59%**, and **40.83 percentage points**. Totals rounded to two decimals are 796,883.74 of 1,139,791.91 in 2023 and 1,680,043.89 of 2,385,947.97 in 2025. The assistant did not run the query. Review the data-quality outputs to assess missing and unmatched records.
 
 ### `04_time_to_sell_by_category.sql`
 
@@ -45,4 +45,4 @@ An earlier exploratory query about elapsed days from inventory creation to sale,
 
 ## Query cost
 
-For `01_data_quality_checks.sql`, BigQuery's job history shows 7.23 MB processed for the diagnostic statement and 1.38 MB for the year-coverage statement. These are actual processed-byte amounts shown after execution, not pre-run estimates. The editor estimates and actual bytes processed for the country revenue and concentration queries have not been provided; add them after checking and running each query. A `LIMIT` does not reduce bytes scanned.
+For `01_data_quality_checks.sql`, BigQuery's job history shows 7.23 MB processed for the diagnostic statement and 1.38 MB for the year-coverage statement. These are actual processed-byte amounts shown after execution, not pre-run estimates. The editor estimates and actual bytes processed for the country revenue and concentration queries were not visible in the supplied screenshots; add them from the job details if available. A `LIMIT` does not reduce bytes scanned.

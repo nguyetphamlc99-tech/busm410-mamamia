@@ -19,21 +19,21 @@
 
 ### Gap and benchmark facts
 
-The team supplied country-year results in [this Google Sheet](https://docs.google.com/spreadsheets/d/1rDDExt7Uf89crvoLI5ZjTG0p1JqFMs49nnnk2eYQmJY/edit?gid=1679571377#gid=1679571377). The assistant has not independently rerun the query.
+The team ran the numbered revenue queries in BigQuery. The assistant did not run them. The result screenshots show the 2023 and 2025 top-three summary below; the rounded figures agree with [the team's Google Sheet](https://docs.google.com/spreadsheets/d/1rDDExt7Uf89crvoLI5ZjTG0p1JqFMs49nnnk2eYQmJY/edit?gid=1679571377#gid=1679571377) at the displayed precision.
 
 | Year | Top three (China, United States, Brasil) | Total of country rows supplied | Top-three share | Other-country share |
 |---:|---:|---:|---:|---:|
-| 2023 | 796,883.7407 | 1,139,791.91095353 | 69.9% | 30.1% |
-| 2025 | 1,680,043.8917 | 2,385,947.9724193 | 70.4% | 29.6% |
+| 2023 | 796,883.74 | 1,139,791.91 | 69.91% | 30.09% |
+| 2025 | 1,680,043.89 | 2,385,947.97 | 70.41% | 29.59% |
 
-The peer benchmark is all other country groups in the same year. In 2025 the top-three share exceeds the remaining-country share by 40.8 percentage points. The top-three share increased by 0.5 percentage points from 2023 to 2025. These numbers use only the country rows supplied; verify that all country groups are present before treating them as final.
+The peer benchmark is all other country groups returned by the query in the same year. In 2025 the top-three share exceeds the remaining-country share by 40.83 percentage points. The top-three share increased by 0.50 percentage points from 2023 to 2025. The BigQuery results confirm these totals at two-decimal precision; the diagnostic check results still need review before data quality is considered verified.
 
 ### Cleaning and interpretation rules
 
 - Use `sale_price` as recorded in the source. Do not call the result dollars until the currency/unit is confirmed in dataset documentation.
 - The current query includes every joined order-item row; it has no status or return filter. Describe the metric as summed recorded order-item `sale_price`, not net revenue or profit.
 - The query uses an inner join. Check unmatched `user_id` values and country blanks before interpreting totals.
-- Run the data-quality query for duplicate IDs, missing values, negative prices, future timestamps, unmatched users, and year coverage. Those checks are pending until run in BigQuery; do not imply that the data passed them.
+- The data-quality and year-coverage statements ran successfully according to BigQuery screenshots, processing 7.23 MB and 1.38 MB. Their result counts have not been reviewed here; do not imply that the data passed the checks until those values are examined.
 - Do not remove or deduplicate records without reviewing what the records represent and documenting the rule.
 - Omit 2026 from the comparison because it may be a partial year.
 - Treat the analysis as descriptive. It does not establish why revenue is concentrated or quantify a financial loss.

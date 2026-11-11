@@ -14,7 +14,7 @@
 
 ## Problem framing
 
-In the country-year results shared by the team, China, the United States, and Brasil generated 1,680,043.89 recorded `sale_price` units in 2025, or 70.4% of the total across the country rows shown. The benchmark is all remaining country groups, which account for 29.6%; the difference is 40.8 percentage points. The top-three share was 69.9% in 2023, so concentration changed by only 0.5 points. This is the value represented by recorded sales in the leading markets, not estimated profit, lost revenue, or a currency-confirmed dollar amount. See [findings.md](findings.md) and the [team's result sheet](https://docs.google.com/spreadsheets/d/1rDDExt7Uf89crvoLI5ZjTG0p1JqFMs49nnnk2eYQmJY/edit?gid=1679571377#gid=1679571377).
+BigQuery results show China, the United States, and Brasil generated 1,680,043.89 recorded `sale_price` units in 2025, or 70.41% of the total across country groups returned by the query. The peer benchmark is all remaining country groups, with 29.59%; the difference is 40.83 percentage points. In 2023 the shares were 69.91% and 30.09%, so the top-three share increased by 0.50 points. These results match the team's [Google Sheets output](https://docs.google.com/spreadsheets/d/1rDDExt7Uf89crvoLI5ZjTG0p1JqFMs49nnnk2eYQmJY/edit?gid=1679571377#gid=1679571377) at the displayed precision. This is recorded sale-price value, not estimated profit, lost revenue, or a currency-confirmed dollar amount. See [findings.md](findings.md).
 
 ## Explore the work
 
