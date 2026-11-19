@@ -7,17 +7,18 @@
 - **Dataset:** `bigquery-public-data.thelook_ecommerce`
 - **BigQuery project ID:** `mamamia-busm-410`
 - **Repository:** `nguyetphamlc99-tech/busm410-mamamia`
-- **Current analysis:** Country-level concentration in order-item sale-price totals.
+- **Current analysis:** Compare the United States and China in 2025 on recorded sale-price share, active-purchaser share, and recorded sale-price value per active purchaser.
 
 ### Tables, columns, and grain
 
 - `order_items`: analysis uses `id`, `user_id`, `created_at`, and `sale_price`. One source row is an order-item record; the revenue query aggregates these records by year of `created_at`.
 - `users`: analysis uses `id` and `country`. The country is the user's recorded country, not confirmed shipping destination.
 - Join: `order_items.user_id = users.id`.
-- One output row represents one user-country group in one order-item creation year.
+- CP1 revenue output grain: one user-country group in one order-item creation year.
+- Focused 2025 comparison: aggregate sale-price value and distinct active purchasers by user country, then return one summary row for the United States against all joined country groups.
 - Confirm exact column descriptions and types in BigQuery before relying on them. See [Other/README.md](Other/README.md).
 
-### Gap and benchmark facts
+### Prior CP1 results and focused question
 
 The team ran the numbered revenue queries in BigQuery. The assistant did not run them. The result screenshots show the 2023 and 2025 top-three summary below; the rounded figures agree with [the team's Google Sheet](https://docs.google.com/spreadsheets/d/1rDDExt7Uf89crvoLI5ZjTG0p1JqFMs49nnnk2eYQmJY/edit?gid=1679571377#gid=1679571377) at the displayed precision.
 
@@ -26,16 +27,16 @@ The team ran the numbered revenue queries in BigQuery. The assistant did not run
 | 2023 | 796,883.74 | 1,139,791.91 | 69.91% | 30.09% |
 | 2025 | 1,680,043.89 | 2,385,947.97 | 70.41% | 29.59% |
 
-The peer benchmark is all other country groups returned by the query in the same year. In 2025 the top-three share exceeds the remaining-country share by 40.83 percentage points. The top-three share increased by 0.50 percentage points from 2023 to 2025. The BigQuery results confirm these totals at two-decimal precision; the diagnostic check results still need review before data quality is considered verified.
+The earlier top-three comparison is context for the current question, not the current gap definition. The latest BigQuery screenshot shows the corrected two-row result: China sale-price value 795,315.45 (33.79% of total) and 7,910 active purchasers; U.S. sale-price value 529,094.11 (22.48%) and 5,336 active purchasers. The all-country sale-price total is 2,353,813.65. The screenshot clips the all-country active-purchaser denominator; the earlier matching output showed 23,508. The current total differs from the earlier CP1 result of 2,385,947.97; rerun queries 02 and 03 under the same source state/date filter before treating results as reconciled.
 
 ### Cleaning and interpretation rules
 
 - Use `sale_price` as recorded in the source. Do not call the result dollars until the currency/unit is confirmed in dataset documentation.
-- The current query includes every joined order-item row; it has no status or return filter. Describe the metric as summed recorded order-item `sale_price`, not net revenue or profit.
+- The CP1 and focused queries include every joined order-item row; they have no status or return filter. Describe the metric as summed recorded order-item `sale_price`, not net revenue or profit.
 - The query uses an inner join. Check unmatched `user_id` values and country blanks before interpreting totals.
 - Both data-quality statements ran successfully (7.23 MB and 1.38 MB processed). The year-coverage result shows 66,265 rows in 2026 and a latest timestamp of 2026-11-14 23:48:20 UTC; the screenshot is dated 2026-11-11, so this timestamp appears future-dated. The diagnostic output shows 1,582 future `created_at` values and zero for the other nine checks. Investigate the future timestamps; do not filter them automatically.
 - Do not remove or deduplicate records without reviewing what the records represent and documenting the rule.
-- Omit 2026 from the comparison because it may be a partial year.
+- Use the completed 2025 calendar year for the focused comparison. The historical CP1 comparison also includes 2023; omit 2026 because it may be partial.
 - Treat the analysis as descriptive. It does not establish why revenue is concentrated or quantify a financial loss.
 
 ## Before starting substantial work

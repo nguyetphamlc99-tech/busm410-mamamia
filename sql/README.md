@@ -1,6 +1,6 @@
 # SQL process
 
-This folder contains the SQL used to check the fields, reproduce the user-country totals, and calculate the top-three concentration measure. Each query starts with a short note pointing here.
+This folder contains the SQL used to check the fields, reproduce the CP1 user-country totals, and compare U.S. sales and active-purchaser shares for the focused 2025 question. Each query starts with a short note pointing here.
 
 ## Query sequence
 
@@ -62,19 +62,27 @@ The team ran the ranked query in BigQuery. Its result screenshot shows 2023 top-
 
 An earlier exploratory query about elapsed days from inventory creation to sale, retained for project history. It is outside the current country revenue finding and should not be used to support the current conclusion.
 
+### `05_us_china_sales_vs_purchaser_share_2025.sql`
+
+Compares the United States and China during calendar year 2025. The inner query has one row per user country and calculates total recorded sale price and distinct users with at least one joined order item. The final output has one row for each focus country, with its sale-price total and share of all-country sale-price value, active-purchaser count and share, the sales-share-minus-purchaser-share difference in percentage points, and sale-price value per active purchaser. Positive differences mean a country's recorded sale-price share exceeds its active-purchaser share; negative differences mean it is smaller. This is a descriptive comparison, not a target or proof of a business problem.
+
+**Run status:** The team ran the corrected two-row query in BigQuery. Its visible output shows China sale-price value **795,315.45**, U.S. value **529,094.11**, all-country sale-price value **2,353,813.65**, and country-specific sales shares of **33.79%** and **22.48%**, respectively. It also shows **7,910** active purchasers in China and **5,336** in the U.S. The screenshot clips the all-country active-purchaser denominator; the matching earlier output showed **23,508**, used for the approximate purchaser shares in `findings.md`. The current total differs from the earlier CP1 all-country total of **2,385,947.97** units, so rerun queries 02 and 03 with the same date filter and source state before combining results. BigQuery displayed an estimated scan of **5.87 MB**; actual processed bytes were not visible.
+
 ## Cleaning and interpretation choices
 
-- The current revenue query does not apply data cleaning filters. The quality-check SQL is diagnostic, not an instruction to drop rows.
+- The CP1 country-revenue queries do not apply data cleaning filters. The quality-check SQL is diagnostic, not an instruction to drop rows.
 - The inner join excludes order items without a matching user. The quality check reports this so the team can decide whether it affects the results.
 - A blank or null user country may form a separate group in BigQuery. Keep it visible while checking completeness; do not silently remove it from the denominator.
 - Duplicate `order_items.id` or `users.id` values could change totals or multiply rows in the join. Inspect any duplicates before choosing a treatment.
 - The diagnostic output shows zero duplicate IDs, blank/null user country, missing IDs or join keys, unmatched users, null timestamps, and null/negative prices. It shows 1,582 future timestamps, which need investigation before deciding whether further cleaning is needed.
 - No status or return exclusion is made, so the measure is recorded item sale price, not net revenue or profit.
 - The country field is sourced from `users.country`; it is not a shipping destination.
-- Use 2023 and 2025 for comparison; 2026 may be incomplete.
+- The focused query uses 2025, a completed year. The earlier CP1 comparison uses 2023 and 2025; 2026 may be incomplete.
 - Do not label the results in dollars until the dataset's currency/unit is documented.
 - Google Sheets was used to view the provided output. No spreadsheet formulas were supplied; the arithmetic used for the summary is documented in `findings.md`.
 
 ## Query cost
 
 For `01_data_quality_checks.sql`, BigQuery's job history shows 7.23 MB processed for the diagnostic statement and 1.38 MB for the year-coverage statement. These are actual processed-byte amounts shown after execution, not pre-run estimates. The editor estimates and actual bytes processed for the country revenue and concentration queries were not visible in the supplied screenshots; add them from the job details if available. A `LIMIT` does not reduce bytes scanned.
+
+For the corrected two-country query, BigQuery displayed an estimated 5.87 MB scan. The actual processed-byte amount was not visible. A `LIMIT` does not reduce bytes scanned.

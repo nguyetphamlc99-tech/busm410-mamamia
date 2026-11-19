@@ -14,7 +14,7 @@
 
 ## Problem framing
 
-BigQuery results show China, the United States, and Brasil generated 1,680,043.89 recorded `sale_price` units in 2025, or 70.41% of the total across country groups returned by the query. The peer benchmark is all remaining country groups, with 29.59%; the difference is 40.83 percentage points. In 2023 the shares were 69.91% and 30.09%, so the top-three share increased by 0.50 points. These results match the team's [Google Sheets output](https://docs.google.com/spreadsheets/d/1rDDExt7Uf89crvoLI5ZjTG0p1JqFMs49nnnk2eYQmJY/edit?gid=1679571377#gid=1679571377) at the displayed precision. This is recorded sale-price value, not estimated profit, lost revenue, or a currency-confirmed dollar amount. See [findings.md](findings.md).
+The focused question compares the United States and China in 2025: each country's share of recorded order-item sale-price value, its share of active purchasers, and recorded sale-price value per active purchaser. The corrected query shows China at 33.79% of sales and 7,910 active purchasers; the U.S. at 22.48% and 5,336 purchasers. These shares are close to the countries' shares of active purchasers, so the comparison does not show a substantial mismatch. The all-country sales total differs from the earlier CP1 result and needs reconciliation before finalizing. See [findings.md](findings.md).
 
 ## Explore the work
 
@@ -22,13 +22,14 @@ BigQuery results show China, the United States, and Brasil generated 1,680,043.8
 |---|---|
 | [AGENTS.md](AGENTS.md) | Project facts and instructions for AI-assisted work |
 | [charter.md](charter.md) | Project question, decision, scope, and success criteria |
-| [findings.md](findings.md) | Measured gap, peer benchmark, value, and chart |
+| [findings.md](findings.md) | Focused U.S.–China comparison, preliminary U.S. result, CP1 context, and limits |
 | [sql/README.md](sql/README.md) | Query process, cleaning decisions, and interpretation |
 | [sql/01_data_quality_checks.sql](sql/01_data_quality_checks.sql) | Data-quality checks for fields used in the analysis |
 | [sql/02_country_revenue_by_year.sql](sql/02_country_revenue_by_year.sql) | Reproduces country-year sale-price totals |
 | [sql/03_top_three_concentration.sql](sql/03_top_three_concentration.sql) | Calculates top-three share and peer comparison |
 | [sql/04_time_to_sell_by_category.sql](sql/04_time_to_sell_by_category.sql) | Earlier exploratory query retained for context |
-| [visuals/gap_chart.png](visuals/gap_chart.png) | 2023 and 2025 revenue-share comparison |
+| [sql/05_us_china_sales_vs_purchaser_share_2025.sql](sql/05_us_china_sales_vs_purchaser_share_2025.sql) | Compares U.S. and China sales shares with their active-purchaser shares in 2025 |
+| [visuals/gap_chart.png](visuals/gap_chart.png) | Earlier 2023 and 2025 top-three concentration comparison |
 | [Other/README.md](Other/README.md) | Dataset documentation links and table notes |
 | [Other/thelook_revenue_erd.dbml](Other/thelook_revenue_erd.dbml) | Source for the table relationship diagram |
 | [Other/table_diagram.pdf](Other/table_diagram.pdf) | Printable table relationship diagram |
