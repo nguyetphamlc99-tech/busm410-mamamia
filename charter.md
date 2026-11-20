@@ -10,7 +10,7 @@ We answer this by comparing two percentages for each country:
 - **Share of active purchasers:** the number of users in that country who made at least one 2025 purchase, divided by the number of active purchasers across all countries.
 - **Difference:** item-sale-value share minus active-purchaser share, in percentage points.
 
-If the difference is positive, the country's share of item-sale value is higher than its share of purchasers. If it is negative, the value share is lower. A difference near zero means the shares are about the same. This is a comparison, not a target or industry benchmark.
+If the difference is positive, the country's share of item-sale value is higher than its share of purchasers. If it is negative, the value share is lower. A difference near zero means the shares are about the same. We also compare each country's item-sale value per active purchaser with the overall average: total item-sale value across all countries divided by all active purchasers. This is a weighted average across purchasers, not an average of country averages. These comparisons are not targets or industry benchmarks.
 
 **Important:** `sale_price` is summed from order-item rows. This measures recorded item-sale value, not the number of transactions. The currency is not confirmed, and the query does not remove returns or canceled items.
 
@@ -32,7 +32,7 @@ A marketing or market-planning manager could use the comparison to decide whethe
 
 ## What success looks like
 
-- Report sales share, active-purchaser share, share gap, and recorded sale-price per active purchaser for both countries from one query run.
+- Report sales share, active-purchaser share, share gap, and sale-price value per active purchaser for the U.S. and China, alongside the all-country average.
 - Check that both countries' figures use the same 2025 period and joined population.
 - Reconcile the focused query's all-country sales total with the earlier CP1 output before finalizing the comparison.
 - Treat any difference as descriptive. Do not call it a business shortfall or recommend budget changes without a target and evidence about costs, profit, or market potential.

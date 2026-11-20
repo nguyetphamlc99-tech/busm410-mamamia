@@ -18,11 +18,11 @@
 
 In 2025, did the United States or China account for a much bigger share of recorded item-sale value than of the people who bought something?
 
-We compare each country's share of the summed `sale_price` values with its share of active purchasers. An active purchaser is a user with at least one 2025 order item. The sales share comes from item-price values, **not from counting transactions**. The currency for `sale_price` has not been confirmed.
+We compare each country's share of the summed `sale_price` values with its share of active purchasers. We also compare each country's sale-price value per active purchaser with the average across all countries. An active purchaser is a user with at least one 2025 order item. These values come from item prices, **not from counting transactions**, and the currency for `sale_price` has not been confirmed.
 
 ### What we found so far
 
-China accounts for 33.79% of recorded item-sale value and about 33.65% of active purchasers. The United States accounts for 22.48% of item-sale value and about 22.70% of active purchasers. The differences are small, so this comparison does **not** show a clear mismatch or a proven business problem. The result may help a market-planning manager decide whether more research is needed; it does not justify changing a budget by itself.
+China accounts for 33.79% of recorded item-sale value and about 33.65% of active purchasers. The United States accounts for 22.48% of item-sale value and about 22.70% of active purchasers. Average recorded item-sale value per active purchaser is about 100.55 units in China, 99.16 in the U.S., and 100.13 across all countries. The country averages are close to the overall average, and the share differences are small. This comparison does **not** show a clear mismatch or a proven business problem. It may help a market-planning manager decide whether more research is needed; it does not justify changing a budget by itself.
 
 The total item-sale value in this run does not match the earlier CP1 total, so the result is still provisional. See [findings.md](findings.md) for details.
 
