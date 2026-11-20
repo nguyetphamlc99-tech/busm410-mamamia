@@ -7,14 +7,16 @@
 - **Dataset:** `bigquery-public-data.thelook_ecommerce`
 - **BigQuery project ID:** `mamamia-busm-410`
 - **Repository:** `nguyetphamlc99-tech/busm410-mamamia`
-- **Current analysis:** Compare Belgium's 2025 active-purchaser count with the average country count, and its recorded sale-price value per purchaser with the overall purchaser-weighted average.
+- **Current analysis:** Compare Belgium's 2025 active-purchaser count with the average country count, and its recorded sale-price value per purchaser with the overall purchaser-weighted average. CP2 additionally explores country/category associations with purchaser-level recorded spend; its model has not yet been run.
 
 ### Tables, columns, and grain
 
 - `order_items`: analysis uses `id`, `user_id`, `created_at`, and `sale_price`. One source row is an order-item record.
 - `users`: analysis uses `id` and `country`. Country is the user's recorded country, not a confirmed shipping destination.
+- CP2 analysis assumes `order_items.product_id = products.id` and `products.category`; confirm these fields in BigQuery before running query 08.
 - Join: `order_items.user_id = users.id`.
 - Current query grain: one row for Belgium, compared with averages calculated from all joined country groups.
+- CP2 model-table grain: one row per purchaser with a matched 2025 order item. Model Y is 2025 recorded spend; X's are country and category purchase flags.
 - Confirm exact column descriptions and types in BigQuery before relying on them. See [Other/README.md](Other/README.md).
 
 ### Current result and prior CP1 context
