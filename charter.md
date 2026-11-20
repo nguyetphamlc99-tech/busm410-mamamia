@@ -1,20 +1,22 @@
-# Charter: U.S. and China Sales Contribution
+# Charter: Do Sales Contributions Match Purchaser Counts?
 
-## The question
+## The question in plain language
 
-In 2025, how did the United States and China differ in recorded order-item sale-price contribution relative to each country's share of active purchasers?
+In 2025, did the United States or China contribute a much larger share of recorded item-sale value than its share of active purchasers?
 
-The comparison is:
+We answer this by comparing two percentages for each country:
 
-- **Country sales share:** 2025 `sale_price` from order items joined to users in that country, divided by 2025 `sale_price` across all joined user-country groups.
-- **Country active-purchaser share:** distinct users in that country with at least one joined 2025 order item, divided by distinct active users across all joined user-country groups.
-- **Share gap:** each country's sales share minus its active-purchaser share, in percentage points.
+- **Share of recorded item-sale value:** that country's sum of `sale_price` divided by the sum for all countries.
+- **Share of active purchasers:** the number of users in that country who made at least one 2025 purchase, divided by the number of active purchasers across all countries.
+- **Difference:** item-sale-value share minus active-purchaser share, in percentage points.
 
-If a country's share gap is positive, that country accounts for a larger share of recorded sales than of active purchasers; if negative, its sales share is smaller. A zero or near-zero gap means the shares are similar. The query also compares recorded sale-price value per active purchaser. These are internal comparisons, not targets or industry benchmarks.
+If the difference is positive, the country's share of item-sale value is higher than its share of purchasers. If it is negative, the value share is lower. A difference near zero means the shares are about the same. This is a comparison, not a target or industry benchmark.
 
-## The decision this supports
+**Important:** `sale_price` is summed from order-item rows. This measures recorded item-sale value, not the number of transactions. The currency is not confirmed, and the query does not remove returns or canceled items.
 
-The intended stakeholder is a marketing or market-planning manager deciding whether to investigate customer-base size or spend patterns in two leading markets. The comparison can show whether sales contributions are proportional to the active-purchaser bases in the United States and China. It cannot establish profitability, market risk, or whether budget should change.
+## Who may use this and why
+
+A marketing or market-planning manager could use the comparison to decide whether to look more closely at purchaser numbers or spending patterns in these two markets. The current figures do not prove a problem or support a budget change. The data does not include profit, marketing costs, market potential, or a target country mix.
 
 ## Scope
 

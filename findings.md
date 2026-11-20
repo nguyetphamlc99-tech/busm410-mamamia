@@ -1,16 +1,16 @@
 # Findings: U.S. and China Sales Contribution
 
-## 1. Focused question
+## 1. The question
 
-In 2025, how did the United States and China differ in recorded order-item `sale_price` contribution relative to each country's share of active purchasers?
+In 2025, did the United States or China account for a much bigger share of recorded item-sale value than of active purchasers?
 
 The team ran the corrected two-country query [`sql/05_us_china_sales_vs_purchaser_share_2025.sql`](sql/05_us_china_sales_vs_purchaser_share_2025.sql) in BigQuery. It returns one row for each focus country with recorded sale-price total, share of all-country sale-price value, active-purchaser count and share, difference between the two shares, and recorded sale-price per active purchaser.
 
 | Measure | United States | China |
 |---|---:|---:|
-| Recorded sale-price total | 529,094.11 units | 795,315.45 units |
-| All-country recorded sale-price total | 2,353,813.65 units | 2,353,813.65 units |
-| Share of all-country sale-price total | 22.48% | 33.79% |
+| Sum of item `sale_price` values (currency not confirmed) | 529,094.11 | 795,315.45 |
+| All-country sum of item `sale_price` values | 2,353,813.65 | 2,353,813.65 |
+| Share of all-country item-sale value | 22.48% | 33.79% |
 | Active purchasers | 5,336 | 7,910 |
 | All-country active purchasers | 23,508* | 23,508* |
 | Share of all-country active purchasers | About 22.70% | About 33.65% |
@@ -19,13 +19,15 @@ The team ran the corrected two-country query [`sql/05_us_china_sales_vs_purchase
 
 \*The all-country active-purchaser count of 23,508 was visible in the matching U.S.-only run; the latest screenshot clipped that denominator column. The shares and differences above use that count and are rounded. The latest screenshot shows the country-specific sales-share column, so the earlier issue where the U.S. share repeated on the China row is resolved.
 
-## 2. How to interpret the comparison
+## 2. What the numbers mean
 
-For each country, compare its share of recorded sale-price value with its share of active purchasers. China's sales share is about 0.14 points above its purchaser share; the U.S. sales share is about 0.22 points below. Average recorded sale-price value per active purchaser is about 100.55 units in China and 99.16 in the U.S., a small difference. These are descriptive comparisons, not targets or industry benchmarks.
+The percentages use the sum of item `sale_price` values. They are **not** percentages of the number of transactions. China's item-sale-value share is about 0.14 percentage points above its purchaser share. The U.S. share is about 0.22 points below. Those differences are small, so this result does not show a clear mismatch between each country's share of value and its share of purchasers.
+
+Recorded item-sale value per active purchaser is about 100.55 units in China and 99.16 in the U.S. The currency is not confirmed, so these figures should not be called dollars.
 
 ## 3. Who could use this and why
 
-A marketing or market-planning manager could use this comparison to decide whether to investigate purchaser-base size or spend patterns in two major markets. The dataset does not include marketing cost, profit, market potential, or a desired country mix, so the result cannot support a budget recommendation by itself.
+A marketing or market-planning manager could use this comparison to decide whether more research into purchaser numbers or spending patterns is needed. These results alone do not establish a business problem or support a budget change: the data has no profit, marketing cost, market potential, or target country mix.
 
 ## 4. Earlier CP1 context
 

@@ -14,7 +14,17 @@
 
 ## Problem framing
 
-The focused question compares the United States and China in 2025: each country's share of recorded order-item sale-price value, its share of active purchasers, and recorded sale-price value per active purchaser. The corrected query shows China at 33.79% of sales and 7,910 active purchasers; the U.S. at 22.48% and 5,336 purchasers. These shares are close to the countries' shares of active purchasers, so the comparison does not show a substantial mismatch. The all-country sales total differs from the earlier CP1 result and needs reconciliation before finalizing. See [findings.md](findings.md).
+### The question
+
+In 2025, did the United States or China account for a much bigger share of recorded item-sale value than of the people who bought something?
+
+We compare each country's share of the summed `sale_price` values with its share of active purchasers. An active purchaser is a user with at least one 2025 order item. The sales share comes from item-price values, **not from counting transactions**. The currency for `sale_price` has not been confirmed.
+
+### What we found so far
+
+China accounts for 33.79% of recorded item-sale value and about 33.65% of active purchasers. The United States accounts for 22.48% of item-sale value and about 22.70% of active purchasers. The differences are small, so this comparison does **not** show a clear mismatch or a proven business problem. The result may help a market-planning manager decide whether more research is needed; it does not justify changing a budget by itself.
+
+The total item-sale value in this run does not match the earlier CP1 total, so the result is still provisional. See [findings.md](findings.md) for details.
 
 ## Explore the work
 
