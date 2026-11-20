@@ -7,6 +7,7 @@ WITH purchaser_items AS (
   SELECT
     u.id AS purchaser_id,
     u.country,
+    u.traffic_source,
     p.category,
     oi.sale_price
   FROM `bigquery-public-data.thelook_ecommerce.order_items` AS oi
@@ -20,6 +21,7 @@ WITH purchaser_items AS (
 SELECT
   purchaser_id,
   country,
+  traffic_source,
   SUM(sale_price) AS spend_2025,
   COUNT(*) AS order_item_rows_2025,
   COUNTIF(category IS NULL) AS order_items_without_category,
@@ -50,4 +52,4 @@ SELECT
   IFNULL(LOGICAL_OR(category = 'Jumpsuits & Rompers'), FALSE) AS bought_jumpsuits_rompers,
   IFNULL(LOGICAL_OR(category = 'Clothing Sets'), FALSE) AS bought_clothing_sets
 FROM purchaser_items
-GROUP BY purchaser_id, country;
+GROUP BY purchaser_id, country, traffic_source;

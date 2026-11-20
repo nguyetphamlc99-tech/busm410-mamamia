@@ -15,7 +15,7 @@
 
 In 2025, did Belgium have fewer active purchasers than the average country, while its recorded sale-price value per purchaser was above the overall average?
 
-The results show 286 active purchasers in Belgium, compared with a simple average of 1,959 purchasers per country. Belgium's recorded sale-price value per active purchaser was about 110.13 units, compared with an overall average of about 100.13. A category screenshot also compares Belgium category purchasers with all-country category benchmarks, but its percentages imply 296 Belgium purchasers. That count difference still needs checking. CP2 model SQL is prepared to examine how country and categories purchased are associated with purchaser spend; it needs to be run and evaluated in BigQuery before submission.
+The results show 286 active purchasers in Belgium, compared with a simple average of 1,959 purchasers per country. Belgium's recorded sale-price value per active purchaser was about 110.13 units, compared with an overall average of about 100.13. A category screenshot also compares Belgium category purchasers with all-country category benchmarks, but its percentages imply 296 Belgium purchasers. That count difference still needs checking. CP2 model SQL is prepared to examine associations between purchaser spend, country, recorded acquisition source, and categories purchased; it needs to be run and evaluated in BigQuery before submission.
 
 The simple average purchaser count gives each country equal weight. The overall sale-price value per purchaser is calculated across all active purchasers, so countries with more purchasers contribute more to it. The `sale_price` currency has not been confirmed.
 

@@ -12,11 +12,11 @@
 ### Tables, columns, and grain
 
 - `order_items`: analysis uses `id`, `user_id`, `created_at`, and `sale_price`. One source row is an order-item record.
-- `users`: analysis uses `id` and `country`. Country is the user's recorded country, not a confirmed shipping destination.
+- `users`: country analysis uses `id` and `country`; CP2 also uses `traffic_source` as the recorded acquisition channel. Country is the user's recorded country, not a confirmed shipping destination.
 - CP2 analysis assumes `order_items.product_id = products.id` and `products.category`; confirm these fields in BigQuery before running query 08.
 - Join: `order_items.user_id = users.id`.
 - Current query grain: one row for Belgium, compared with averages calculated from all joined country groups.
-- CP2 model-table grain: one row per purchaser with a matched 2025 order item. Model Y is 2025 recorded spend; X's are country and category purchase flags.
+- CP2 model-table grain: one row per purchaser with a matched 2025 order item. Model Y is 2025 recorded spend; X's are country, acquisition source, and category purchase flags.
 - Confirm exact column descriptions and types in BigQuery before relying on them. See [Other/README.md](Other/README.md).
 
 ### Current result and prior CP1 context

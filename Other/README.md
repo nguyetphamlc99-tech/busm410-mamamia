@@ -13,7 +13,7 @@
 
 | Table | Columns used | Role in analysis |
 |---|---|---|
-| `users` | `id`, `country` | User identifier and user's recorded country |
+| `users` | `id`, `country`, `traffic_source` (for CP2) | User identifier, user's recorded country, and recorded acquisition channel |
 | `order_items` | `id`, `user_id`, `created_at`, `sale_price` | Order-item identifier, user join key, year filter, and value summed |
 | `products` | `id`, `category` (assumed for CP2 query 08; verify in BigQuery) | Product identifier and category label for category-purchase features |
 

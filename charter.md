@@ -4,7 +4,7 @@
 
 In 2025, did Belgium have fewer active purchasers than the average country, while its recorded sale-price value per purchaser was above the overall average?
 
-For CP2 Part B, test which purchaser countries and product categories are associated with a purchaser's total recorded sale-price value in 2025, using linear regression. The model tests associations in this dataset; it does not prove causes.
+For CP2 Part B, test whether purchaser country, recorded acquisition source, and product categories are associated with a purchaser's total recorded sale-price value in 2025, using linear regression. The model tests associations in this dataset; it does not prove causes.
 
 We compare two measures:
 

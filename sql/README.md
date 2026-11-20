@@ -23,15 +23,15 @@ Draft category query for the table transcribed in [`findings.md`](../findings.md
 
 ### `08_cp2_customer_analysis_table.sql`
 
-Creates `mamamia-busm-410.cp2` in the US if needed and builds one row per matched purchaser with at least one 2025 order item. Y is `spend_2025`, the purchaser's summed 2025 recorded `sale_price`. X's are recorded country and yes/no flags for purchase in each category. It inner-joins users and left-joins products, so unmatched product rows remain in the spend outcome but have no category flag. Confirm `order_items.product_id`, `products.id`, and `products.category` before running. Category flags and Y cover the same year, so category coefficients are associations and not causal effects.
+Creates `mamamia-busm-410.cp2` in the US if needed and builds one row per matched purchaser with at least one 2025 order item. Y is `spend_2025`, the purchaser's summed 2025 recorded `sale_price`. X's are recorded country, acquisition `traffic_source`, and yes/no flags for purchase in each category. It inner-joins users and left-joins products, so unmatched product rows remain in the spend outcome but have no category flag. Confirm `order_items.product_id`, `products.id`, and `products.category` before running. Category flags and Y cover the same year, so category coefficients are associations and not causal effects.
 
 ### `09_explore_cp2_analysis_table.sql`
 
-Returns three outputs: row-grain and label checks, average spend by country, and Belgium versus non-Belgium purchaser counts and averages. Compare this count with prior query results before training.
+Returns four outputs: row-grain and label checks (including missing acquisition source), average spend by acquisition source, average spend by country, and Belgium versus non-Belgium purchaser counts and averages. Compare this count with prior query results before training.
 
 ### `10_train_cp2_spend_model.sql`
 
-Trains BigQuery ML linear regression with `spend_2025` as Y and country/category indicators as X's. It requests p-values with dummy encoding and keeps `max_iterations = 50` and `early_stop = FALSE`. It leaves `data_split_method` at BigQuery ML's default.
+Trains BigQuery ML linear regression with `spend_2025` as Y and country, acquisition-source, and category indicators as X's. It requests p-values with dummy encoding and keeps `max_iterations = 50` and `early_stop = FALSE`. It leaves `data_split_method` at BigQuery ML's default.
 
 ### `11_evaluate_cp2_spend_model.sql` and `12_cp2_spend_model_drivers.sql`
 

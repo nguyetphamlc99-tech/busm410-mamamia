@@ -11,6 +11,7 @@ OPTIONS (
 SELECT
   spend_2025,
   country,
+  traffic_source,
   bought_jeans,
   bought_fashion_hoodies,
   bought_sleep_lounge,

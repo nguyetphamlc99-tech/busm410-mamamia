@@ -4,21 +4,21 @@
 
 ## What the model asks
 
-Among purchasers with at least one 2025 order item, which recorded country and product categories are associated with higher total recorded sale-price value in 2025?
+Among purchasers with at least one 2025 order item, which recorded country, acquisition source, and product categories are associated with higher total recorded sale-price value in 2025?
 
 | | |
 |---|---|
 | **Y (outcome)** | `spend_2025`: one purchaser's sum of recorded `order_items.sale_price` for 2025; a number. |
 | **Model** | BigQuery ML linear regression ([training SQL](../sql/10_train_cp2_spend_model.sql)). |
-| **X's (features)** | User country and yes/no indicators for whether the purchaser bought each product category during 2025. |
+| **X's (features)** | User country, recorded `traffic_source` (acquisition channel), and yes/no indicators for whether the purchaser bought each product category during 2025. |
 | **Analysis table** | One row per purchaser with a matched order item in 2025 ([table SQL](../sql/08_cp2_customer_analysis_table.sql)). |
 | **Training/test split** | BigQuery ML's default split. Fill in the actual row count and whether a held-out set was used after running the table and model. The course guide says tables with fewer than 500 rows have no held-out rows. |
 
-The category indicators and outcome come from the same year. Their model associations do not show that buying a category causes higher spend; category item values are part of total spend by definition. Country is the main adjusted comparison of interest, with the category indicators held steady.
+The category indicators and outcome come from the same year. Their model associations do not show that buying a category causes higher spend; category item values are part of total spend by definition. The model also checks whether recorded acquisition source is associated with spend, holding country and category indicators steady. That association does not prove the channel caused the spending difference.
 
 ## Part A: Looking at the data
 
-The descriptive category results are transcribed in [findings.md](../findings.md). Before modeling, run [the analysis-table checks](../sql/09_explore_cp2_analysis_table.sql) and confirm one row per purchaser, nonmissing spend labels, and the count of Belgium purchasers. The category screenshot's percentages imply about 296 Belgian purchasers, while the earlier country result reports 286; reconcile this before finalizing the penetration numbers.
+The descriptive category results are transcribed in [findings.md](../findings.md). Before modeling, run [the analysis-table checks](../sql/09_explore_cp2_analysis_table.sql) and confirm one row per purchaser, nonmissing spend labels and acquisition sources, and the count of Belgium purchasers. The category screenshot's percentages imply about 296 Belgian purchasers, while the earlier country result reports 286; reconcile this before finalizing the penetration numbers.
 
 ## Report card: does it predict well?
 
@@ -39,6 +39,7 @@ Run [the driver query](../sql/12_cp2_spend_model_drivers.sql). Paste the non-int
 | Feature | Coefficient | p-value | Reading |
 |---|---:|---:|---|
 | Country category weights (report Belgium against the comparison country shown by BigQuery) | Pending BigQuery run | Pending BigQuery run | Pending |
+| `traffic_source` category weights | Pending BigQuery run | Pending BigQuery run | Pending |
 | One row for each product-category indicator returned | Pending BigQuery run | Pending BigQuery run | Pending |
 
 Expand the table to one row per returned weight. Identify the omitted zero-weight/NaN category as the comparison group. For the two strongest associations, complete after reading the output:
