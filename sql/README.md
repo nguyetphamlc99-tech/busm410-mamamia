@@ -86,3 +86,10 @@ Compares the United States and China during calendar year 2025. The inner query 
 For `01_data_quality_checks.sql`, BigQuery's job history shows 7.23 MB processed for the diagnostic statement and 1.38 MB for the year-coverage statement. These are actual processed-byte amounts shown after execution, not pre-run estimates. The editor estimates and actual bytes processed for the country revenue and concentration queries were not visible in the supplied screenshots; add them from the job details if available. A `LIMIT` does not reduce bytes scanned.
 
 For the corrected two-country query, BigQuery displayed an estimated 5.87 MB scan. The actual processed-byte amount was not visible. A `LIMIT` does not reduce bytes scanned.
+
+
+### `11_country_sale_price_per_active_purchaser_2025.sql`
+
+Returns one row per country for 2025, with recorded sale-price total, active-purchaser count, recorded sale-price value per active purchaser, the overall all-country average, and the country's difference from that average. The overall average is weighted across purchasers: total recorded sale-price value divided by total active purchasers.
+
+**Run status:** The team supplied a BigQuery screenshot showing 12 country rows and an all-country average of about **100.13** recorded sale-price units per active purchaser. Poland is lowest in the displayed results, at about **72.19** units per active purchaser, **27.94** units (about **27.9%**) below the overall average, with **45** active purchasers and about **3,248.36** recorded sale-price units total. The currency is not confirmed. This is descriptive and does not explain why Poland's value is lower.

@@ -23,6 +23,18 @@ The percentages use the sum of item `sale_price` values. They are **not** percen
 
 The all-country average is total recorded item-sale value divided by all active purchasers. It is about 100.13 units per purchaser. China is about 0.42 units above this average; the U.S. is about 0.97 units below it. This average is weighted by the number of purchasers in each country; it is not the simple average of country averages. The currency is not confirmed, so these figures should not be called dollars.
 
+### Poland compared with the all-country average
+
+In the country-by-country result, Poland had the lowest sale-price value per active purchaser among the 12 countries shown:
+
+| Measure | Poland | All-country average | Poland's difference |
+|---|---:|---:|---:|
+| Recorded sale-price value per active purchaser | About 72.19 units | About 100.13 units | About 27.94 units lower (27.9% below average) |
+| Active purchasers | 45 | 23,508* | — |
+| Recorded sale-price total | About 3,248.36 units | — | — |
+
+This means Poland's active purchasers had lower recorded item-sale value per person in this 2025 result. It does not show why, prove that Poland is underperforming, or justify a business action. The Poland group has 45 active purchasers, and the currency is unconfirmed. The country-by-country result is reproducible with [`sql/11_country_sale_price_per_active_purchaser_2025.sql`](sql/11_country_sale_price_per_active_purchaser_2025.sql).
+
 ## 3. Who could use this and why
 
 A marketing or market-planning manager could use this comparison to decide whether more research into purchaser numbers or spending patterns is needed. These results alone do not establish a business problem or support a budget change: the data has no profit, marketing cost, market potential, or target country mix.
