@@ -7,16 +7,16 @@
 - **Dataset:** `bigquery-public-data.thelook_ecommerce`
 - **BigQuery project ID:** `mamamia-busm-410`
 - **Repository:** `nguyetphamlc99-tech/busm410-mamamia`
-- **Current analysis:** Compare Belgium's 2025 active-purchaser count with the average country count, and its recorded sale-price value per purchaser with the overall purchaser-weighted average. CP2 additionally explores country/category associations with purchaser-level recorded spend; its model has not yet been run.
+- **Current analysis:** Compare Belgium's 2025 active-purchaser count and recorded sale-price value per purchaser with country benchmarks. CP2 also compares Belgium's status-filtered customer value and adjusts for customer attributes with a linear regression. The supplied model results are documented but were not independently rerun in the latest editing session.
 
 ### Tables, columns, and grain
 
-- `order_items`: analysis uses `id`, `user_id`, `created_at`, and `sale_price`. One source row is an order-item record.
-- `users`: country analysis uses `id` and `country`; CP2 also uses `traffic_source` as the recorded acquisition channel. Country is the user's recorded country, not a confirmed shipping destination.
+- `order_items`: analysis uses `id`, `user_id`, `created_at`, `sale_price`, and, for the customer model, `status`. One source row is an order-item record.
+- `users`: country analysis uses `id` and `country`; CP2 also uses `age`, `gender`, `traffic_source`, and `created_at`. Country is the user's recorded country, not a confirmed shipping destination.
 - CP2 analysis assumes `order_items.product_id = products.id` and `products.category`; confirm these fields in BigQuery before running query 08.
 - Join: `order_items.user_id = users.id`.
 - Current query grain: one row for Belgium, compared with averages calculated from all joined country groups.
-- CP2 model-table grain: one row per purchaser with a matched 2025 order item. Model Y is 2025 recorded spend; X's are country, acquisition source, and category purchase flags.
+- CP2 model-table grain: one customer with at least one 2025 item not currently marked `Cancelled` or `Returned`. Model Y is `net_sale_value`, the sum of remaining recorded `sale_price`; X's are `is_belgium`, age, `is_male`, `traffic_source`, signup month, and days active in 2025. The model omits current-year items, unit prices, and categories because they are components of Y.
 - Confirm exact column descriptions and types in BigQuery before relying on them. See [Other/README.md](Other/README.md).
 
 ### Current result and prior CP1 context
@@ -25,10 +25,13 @@ The team's BigQuery screenshot shows 12 country groups. Belgium has 286 active p
 
 The latest all-country sale-price total is 2,353,813.65 units, which differs from an earlier CP1 output. Rerun queries 02 and 03 under the same date filter and source state before combining those totals.
 
+The team-supplied status-filtered output reports 219 Belgium customers averaging 104.44 sale-price units, versus 17,821 other-country customers averaging 96.44. Its linear model reports `r2_score = 0.0004`; the Belgium coefficient is +11.65 units with p = 0.1316. See `findings.md` and `model/model_card.md`; do not describe these results as independently rerun unless they are.
+
 ### Cleaning and interpretation rules
 
 - Use `sale_price` as recorded in the source. Do not call the result dollars until the currency/unit is confirmed in dataset documentation.
 - The country and focused queries include every joined order-item row; they have no status or return filter. Describe the metric as summed recorded order-item `sale_price`, not net revenue or profit.
+- The CP2 table excludes rows currently marked `Cancelled` or `Returned`, but retains `Shipped` and `Processing`; these statuses may change. Do not call `net_sale_value` confirmed net revenue or profit.
 - The query uses an inner join. Check unmatched `user_id` values and country blanks before interpreting totals.
 - Both data-quality statements ran successfully (7.23 MB and 1.38 MB processed). The year-coverage result shows 66,265 rows in 2026 and a latest timestamp of 2026-11-14 23:48:20 UTC; the screenshot is dated 2026-11-11, so this timestamp appears future-dated. The diagnostic output shows 1,582 future `created_at` values and zero for the other nine checks. Investigate the future timestamps; do not filter them automatically.
 - Do not remove or deduplicate records without reviewing what the records represent and documenting the rule.

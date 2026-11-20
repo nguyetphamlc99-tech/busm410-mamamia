@@ -1,60 +1,80 @@
-# Model Card: Belgium Purchaser Spend, 2025
+# Model Card: Customer Sale-Price Value, 2025
 
-**Status: Draft — BigQuery model and result fields still need to be run and filled in.** Do not submit this card with blank results.
+**Status: Completed using the team's supplied BigQuery results.** The SQL is in [query 13](../sql/13_customer_spend_table_2025.sql) and [query 14](../sql/14_customer_spend_model.sql). These results were not independently rerun in this editing session.
 
-## What the model asks
+## Purpose
 
-Among purchasers with at least one 2025 order item, which recorded country, acquisition source, and product categories are associated with higher total recorded sale-price value in 2025?
+The model asks how customer attributes relate to a customer's recorded 2025 sale-price value while holding the other X's steady, and whether Belgium's higher value per customer remains after adjustment. It supports inference about associations. It does not establish causes.
 
-| | |
-|---|---|
-| **Y (outcome)** | `spend_2025`: one purchaser's sum of recorded `order_items.sale_price` for 2025; a number. |
-| **Model** | BigQuery ML linear regression ([training SQL](../sql/10_train_cp2_spend_model.sql)). |
-| **X's (features)** | User country, recorded `traffic_source` (acquisition channel), and yes/no indicators for whether the purchaser bought each product category during 2025. |
-| **Analysis table** | One row per purchaser with a matched order item in 2025 ([table SQL](../sql/08_cp2_customer_analysis_table.sql)). |
-| **Training/test split** | BigQuery ML's default split. Fill in the actual row count and whether a held-out set was used after running the table and model. The course guide says tables with fewer than 500 rows have no held-out rows. |
+## Data and definitions
 
-The category indicators and outcome come from the same year. Their model associations do not show that buying a category causes higher spend; category item values are part of total spend by definition. The model also checks whether recorded acquisition source is associated with spend, holding country and category indicators steady. That association does not prove the channel caused the spending difference.
+- **Dataset:** `bigquery-public-data.thelook_ecommerce`
+- **Outcome table:** `mamamia-busm-410.busm410.customer_spend_2025`
+- **Row grain:** One customer with at least one 2025 item that was not cancelled or returned.
+- **Rows:** 18,040 customers, including 219 from Belgium.
+- **Y:** `net_sale_value`, the sum of 2025 recorded `sale_price` for items whose current status is not `Cancelled` or `Returned`.
+- **X's:** `is_belgium`, age in years, `is_male`, `traffic_source`, signup month, and `days_active_in_2025`. Signup month is the customer's account creation month, not purchase month; the model uses age in years rather than the age bands explored in Part A.
+- **Status rule:** The full 2025 calendar year is complete. Items marked `Shipped` or `Processing` remain included because the recorded sale price is set when the order item is placed. The team reports about half of 2025 items (19,635 of 39,044) were in those statuses. A stricter rule excluding customers with any open item left 5,483 customers, including 63 in Belgium, so that version was not used.
+- **Held-out data:** The supplied model card reports 18,040 rows, above the course's 500-row threshold, so BigQuery held back evaluation rows under its default split.
 
-## Part A: Looking at the data
+The name `net_sale_value` is the SQL column name. It is not confirmed net revenue or profit: the data's currency is unknown, and items still marked `Shipped` or `Processing` might later be cancelled or returned. The table excludes items currently marked cancelled or returned, but it cannot guarantee final realized sales.
 
-The descriptive category results are transcribed in [findings.md](../findings.md). Before modeling, run [the analysis-table checks](../sql/09_explore_cp2_analysis_table.sql) and confirm one row per purchaser, nonmissing spend labels and acquisition sources, and the count of Belgium purchasers. The category screenshot's percentages imply about 296 Belgian purchasers, while the earlier country result reports 286; reconcile this before finalizing the penetration numbers.
+## Part A checks and patterns
 
-## Report card: does it predict well?
+The supplied checks report no blanks, ages from 12 through 70, no future or impossible dates, and no zero or negative Y values. Review the data and detailed group comparisons in [findings.md](../findings.md).
 
-Run [the evaluation query](../sql/11_evaluate_cp2_spend_model.sql) and fill in the held-out `r2_score`.
+The model leaves item counts, average item price, and product category out of X because those are components of the same-year Y. Including them could make the model appear to explain the outcome using information that is part of its construction. This means the model cannot test whether product mix explains Belgium's higher recorded price; that remains a Part A hypothesis.
 
-| Measure | Your number | What it means |
+## Model
+
+BigQuery ML `linear_reg` model: `mamamia-busm-410.busm410.customer_spend_model`. It uses `calculate_p_values = TRUE`, dummy encoding, `L1_REG = 0`, `max_iterations = 50`, and `early_stop = FALSE`. BigQuery ML's default data split is used.
+
+## Report card
+
+| Measure | Result | Meaning |
 |---|---:|---|
-| r2_score | Pending BigQuery run | 0 means no better than always guessing the test rows' average spend; closer to 1 means more variation explained. |
+| `r2_score` | 0.0004 | The model explains about 0.04% of the variation in test-set customer sale-price value. |
+| Mean absolute error | About 70.5 units | Typical absolute prediction error, in unconfirmed sale-price units. |
 
-> Our r2_score is [number], so the model explains [a lot / a little] of the ups and downs in recorded 2025 sale-price value per purchaser.
+Our `r2_score` is 0.0004, so the model explains almost none of the ups and downs in customer sale-price value. It is not ready to predict individual customer spend for a business decision, but it can still be used for inference.
 
-An association can still be useful for inference when the r2_score is weak. Describe prediction quality honestly.
+## Drivers
 
-## Drivers: which X's have a real association?
+The supplied `ML.ADVANCED_WEIGHTS` summary reports these non-intercept results. Categorical coefficients compare each category with BigQuery's omitted reference category.
 
-Run [the driver query](../sql/12_cp2_spend_model_drivers.sql). Paste the non-intercept rows and fill in the signs, p-values, and readings. A p-value below 0.05 is evidence of an association in this model, not proof of cause. For categorical features, skip comparison rows with a zero weight and `NaN` p-value. Write `p < 0.0001` when BigQuery displays `0.0`.
-
-| Feature | Coefficient | p-value | Reading |
+| X or category | Coefficient | p-value | Reading |
 |---|---:|---:|---|
-| Country category weights (report Belgium against the comparison country shown by BigQuery) | Pending BigQuery run | Pending BigQuery run | Pending |
-| `traffic_source` category weights | Pending BigQuery run | Pending BigQuery run | Pending |
-| One row for each product-category indicator returned | Pending BigQuery run | Pending BigQuery run | Pending |
+| Belgium (`is_belgium`) | +11.65 | 0.1316 | Could be chance after adjustment |
+| Age (per year) | +0.012 | 0.8124 | Could be chance |
+| Male (vs. female) | +9.87 | <0.0001 | Association with higher value |
+| Traffic source: Organic (vs. Search) | −2.48 | 0.3024 | Could be chance |
+| Traffic source: Facebook (vs. Search) | +10.78 | 0.0041 | Association with higher value |
+| Traffic source: Email (vs. Search) | +6.24 | 0.1208 | Could be chance |
+| Traffic source: Display (vs. Search) | −3.13 | 0.4793 | Could be chance |
+| Signup-month categories (vs. May) | −6.55 to +3.98 | 0.12 to 0.87 | No month category is reported significant |
+| Days active in 2025 (per day) | +0.027 | 0.0354 | Small association; borderline at the 0.05 cutoff |
 
-Expand the table to one row per returned weight. Identify the omitted zero-weight/NaN category as the comparison group. For the two strongest associations, complete after reading the output:
+The two strongest reported associations by p-value are:
 
-- **[Feature]** has a [positive/negative] coefficient and p-value [number], so holding the other X's steady, [interpret the association with spend_2025].
-- **[Feature]** has a [positive/negative] coefficient and p-value [number], so holding the other X's steady, [interpret the association with spend_2025].
+- **`is_male`** has a positive coefficient and a p-value below 0.0001, so holding the other X's steady, male customers have about 9.9 more recorded sale-price units than female customers in this model.
+- **Facebook acquisition** has a positive coefficient and a p-value of 0.0041, so holding the other X's steady, Facebook-acquired customers have about 10.8 more recorded sale-price units than Search-acquired customers in this model.
+
+A real link does not prove that an X causes Y. The Belgium coefficient is positive, but its p-value is 0.1316; the model does not find a statistically significant adjusted Belgium difference with this sample.
+
+The supplied summary gives the combined coefficient and p-value ranges for signup-month categories rather than each month row. Run query 14 and add the individual month weights if the assignment requires a separate row for every dummy category.
+
+## Belgium comparison and interpretation
+
+After excluding items currently marked cancelled or returned, Belgium has 219 customers and an average recorded sale-price value of 104.44 units. The other countries have 17,821 customers and average 96.44 units, a raw difference of +8.00. After adjustment for the model's X's, the Belgium coefficient is +11.65 units (p = 0.1316; standard error 7.73). The adjusted difference is not statistically distinguishable from chance in these results.
 
 ## Expected ending
 
-The charter says this work helps a market-planning manager decide whether Belgium merits further research; it does not support a budget decision on its own. After reviewing Part A and the model, keep or revise that ending and add one sentence on what the data taught the team.
+A market-planning manager can use these findings to decide whether Belgium merits more research, but they do not support a budget decision by themselves. Part A suggests Belgium's higher value may be associated with a greater share of higher-priced outerwear and formal categories, while the regression does not find a significant adjusted Belgium effect; that pattern deserves follow-up, not a causal conclusion.
 
-## Limits and run status
+## Limits and provenance
 
-- The model has not been run in BigQuery from this session. BigQuery is unavailable here because its connector is disabled by the workspace administrator.
-- The table SQL assumes `order_items.product_id = products.id` and `products.category`; confirm those fields in BigQuery before running.
-- `sale_price` currency is unconfirmed. The outcome is summed recorded order-item sale price, not confirmed dollars, net revenue, or profit.
-- The query does not filter canceled items or returns. Country is the user's recorded country, not a verified shipping destination.
-- The comparison is descriptive and does not establish why a purchaser spends more or whether a business action would be profitable.
+- The coefficient and evaluation values above were transcribed from the user-supplied `Belgium.zip`; they were not independently rerun here.
+- The supplied model card reports the checks and row counts above; keep the BigQuery result screenshots or export with the team's project evidence.
+- `sale_price` currency is unconfirmed. Do not label these units dollars, net revenue, or profit.
+- The model does not include what customers bought, item counts, or average prices, so it cannot explain the Part A product-mix pattern.
+- The analysis is descriptive and does not establish that gender, acquisition source, signup month, or customer activity caused the spending differences.

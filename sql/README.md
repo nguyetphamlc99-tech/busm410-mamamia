@@ -1,6 +1,6 @@
 # SQL process
 
-The current analysis compares Belgium with averages calculated from all country groups for 2025. The earlier queries are retained as project history; their results are not part of the current finding. Each query starts with a short note pointing here.
+The repository contains the original all-item country comparison, a later status-filtered customer comparison, and earlier draft queries. Queries 13–14 support the current CP2 model results. Queries 08–12 are an earlier model draft with a different outcome and same-year category features; they are retained for project history and are superseded.
 
 ## Current query
 
@@ -19,7 +19,9 @@ The team's screenshot from the prior all-country version shows 12 country groups
 
 Draft category query for the table transcribed in [`findings.md`](../findings.md). It reports Belgian distinct category purchasers and their share of all Belgian purchasers, Belgian category order-item rows and recorded sale-price total, per-buyer sale-price values, all-country category purchasers, and the Belgium-minus-all-country benchmark difference. The all-country metric is the total for a category divided by that category's distinct buyers, includes Belgium, and is not an average of country-level averages. Product fields should be confirmed before running; this query has not been run by the assistant.
 
-## CP2 model queries
+## Earlier CP2 draft queries (superseded)
+
+Queries 08–12 build and train a purchaser spend model that uses same-year category purchases as predictors. They do not match the current model card and should not be used for the current submission. They have not been run in this session.
 
 ### `08_cp2_customer_analysis_table.sql`
 
@@ -37,7 +39,19 @@ Trains BigQuery ML linear regression with `spend_2025` as Y and country, acquisi
 
 Query 11 returns `ML.EVALUATE` results, including `r2_score`. Query 12 returns `ML.ADVANCED_WEIGHTS` coefficients and p-values. Fill in the [model card](../model/model_card.md) only from actual BigQuery results.
 
-**Run status:** The BigQuery connector is disabled by the workspace administrator, so queries 08–12 have not been run in this session. Confirm schema, review estimated bytes in BigQuery, then record the actual row count, evaluation, and weights after running. No CP2 metrics have been filled in or inferred.
+## Current customer-model queries
+
+### `13_customer_spend_table_2025.sql`
+
+Creates `mamamia-busm-410.busm410.customer_spend_2025`, with one row per customer who has at least one 2025 order item whose current status is not `Cancelled` or `Returned`. Y is `net_sale_value`, the sum of the remaining recorded item `sale_price`. The table also derives `is_belgium`, age and age band, `is_male`, traffic source, signup month, and days active during 2025. The customer table's `CREATE OR REPLACE TABLE` statement replaces that named table when run.
+
+The status filter retains `Shipped` and `Processing` items. Their current status could still change, so interpret Y as status-filtered recorded item value, not confirmed realized revenue.
+
+### `14_customer_spend_model.sql`
+
+Trains BigQuery ML linear regression model `mamamia-busm-410.busm410.customer_spend_model`. Y is `net_sale_value`; X's are Belgium indicator, age, male indicator, traffic source, signup month, and days active in 2025. The file also runs `ML.EVALUATE` and `ML.ADVANCED_WEIGHTS`. It sets p-values, dummy encoding, `L1_REG = 0`, 50 iterations, and no early stopping, and uses BigQuery ML's default data split.
+
+**Supplied run results:** The user-provided `Belgium.zip` reports 18,040 rows (219 Belgium customers), an `r2_score` of 0.0004, MAE about 70.5 units, a Belgium coefficient of +11.65 (p = 0.1316), a male coefficient of +9.87 (p < 0.0001), and Facebook versus Search of +10.78 (p = 0.0041). These values were not independently rerun in this editing session. The card notes that individual signup-month coefficient rows were not included in the supplied summary.
 
 ## Earlier queries kept for history
 
@@ -66,8 +80,7 @@ Legacy two-country comparison query, retained for project history only. Its resu
 ## Cleaning and interpretation
 
 - The current query uses 2025 order-item rows joined to `users` by `order_items.user_id = users.id`.
-- CP2 query 08 uses the same user join and a left product join for category flags.
-- The query does not filter item status or returns. Describe `sale_price` as recorded item-sale value, not net revenue or profit.
+- The original country query does not filter item status or returns. Query 13 excludes currently `Cancelled` and `Returned` items but includes `Shipped` and `Processing` items. Describe `sale_price` as recorded item-sale value, not confirmed revenue or profit.
 - Country is taken from `users.country`; it is not a verified shipping destination.
 - Keep blank country groups visible when checking the denominator. Do not silently exclude groups.
 - Do not label values as dollars until the source currency/unit is confirmed.
@@ -75,4 +88,4 @@ Legacy two-country comparison query, retained for project history only. Its resu
 
 ## Query cost
 
-BigQuery job history showed **7.23 MB** processed for the diagnostic statement and **1.38 MB** for the year-coverage statement. An earlier two-country comparison showed an estimated **5.87 MB** scan. No byte estimate or processed-byte result is available yet for the Belgium-focused version of query 06. A `LIMIT` does not reduce bytes scanned.
+BigQuery job history showed **7.23 MB** processed for the diagnostic statement and **1.38 MB** for the year-coverage statement. An earlier two-country comparison showed an estimated **5.87 MB** scan. No byte estimate or processed-byte result is available in this repository for queries 13–14. A `LIMIT` does not reduce bytes scanned.

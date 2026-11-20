@@ -72,6 +72,53 @@ Jeans has the most Belgian category purchasers (41; 13.85% of the implied denomi
 
 The screenshot's category percentages imply about **296** Belgian purchasers (for example, 41 / 13.85%), while the country result above reports **286**. Check the percentage denominator and query filters in BigQuery before treating the penetration figures as final. The category values themselves are descriptive and do not show why purchasing patterns differ.
 
-## CP2 model status
+## Customer-level update: excluding cancelled and returned items
 
-The CP2 model is designed to test whether country, recorded acquisition source (`traffic_source`), and category-purchase indicators are associated with a purchaser's total recorded 2025 spend. Its Y is `spend_2025`; its X's are country, acquisition source, and one yes/no flag per product category. The table, exploration, training, evaluation, and drivers queries are in `sql/08` through `sql/12`; the draft card is [`model/model_card.md`](model/model_card.md). These queries have not been run in BigQuery, so there are no model metrics or statistically significant drivers to report yet.
+The team-supplied BigQuery results add a customer-level comparison using items whose current status is not `Cancelled` or `Returned`. Y is the customer's summed 2025 recorded `sale_price`; this status-filtered customer group differs from the all-item comparison above.
+
+| Measure | Belgium | All other countries | Difference |
+|---|---:|---:|---:|
+| Customers | 219 | 17,821 | — |
+| Average recorded sale-price value per customer | 104.44 units | 96.44 units | +8.00 units |
+
+Belgium's lead remains after this status filter, although it is smaller than the roughly 10.00-unit lead in the all-item comparison. The comparison group here excludes Belgium, while the earlier purchaser-weighted benchmark includes it.
+
+About half of all 2025 items (19,635 of 39,044) were still marked `Shipped` or `Processing` in the supplied result. These items were kept because the recorded sale price is set when the order item is placed, but the status could later change. Excluding every customer with any open item would leave 5,483 customers, including 63 in Belgium; the team did not use that stricter rule.
+
+## Where the gap appears
+
+- **By month:** Belgium's average recorded value per active purchaser was higher in 7 of 12 months. The largest leads were April (+44.6 units), March (+23.2), February (+15.4), and November (+15.0). Belgium was behind in January (−46.5), August (−19.7), and June (−19.3).
+- **By category:** Belgium's per-item price premium was largest in Blazers & Jackets (+57.2 units), Outerwear & Coats (+53.4), and Suits & Sport Coats (+29.8). Belgium was below other countries in 10 of 18 categories with at least 9 items, including Dresses (−30.7) and Accessories (−24.8). Blazers, Outerwear, and Suits were about 30% of Belgium's recorded sales versus about 21% elsewhere.
+- **Volume:** Belgian customers bought about 1.6 items each, similar to customers elsewhere. The observed gap appears more consistent with a higher-priced category mix than with more items per customer. This is a descriptive pattern, not a causal result.
+
+## Suspects: average value per customer
+
+| X group | Belgium result | Other-country comparison | Reading |
+|---|---:|---:|---|
+| Age 65+ (26 Belgian customers) | 161.41 units | 95.76 units | Large difference, small group |
+| Age 18–24 (27 Belgian customers) | 137.72 units | 97.38 units | Large difference, small group |
+| Age 25–34, 45–54, under 18 | 8.6–16.8 units below | — | Belgium is lower in these groups |
+| Men (116) | 110.53 units | 101.90 units | Belgium is higher |
+| Women (103) | 97.58 units | 91.15 units | Belgium is higher |
+| Search (160 Belgian customers) | 108.50 units | 95.99 units | Lead is concentrated in Search |
+| Organic (35 Belgian customers) | 84.75 units | 95.07 units | Belgium is lower |
+
+Treat age groups with fewer than 30 Belgian customers as small samples. Facebook, Email, and Display each had only 6–10 Belgian customers and are not interpreted here.
+
+## Model: adjusted associations
+
+The team's supplied BigQuery model uses 18,040 customers. Its numeric Y is `net_sale_value`, the customer's 2025 recorded sale-price value after excluding items currently marked `Cancelled` or `Returned`. X's are Belgium indicator, age in years, gender indicator, traffic source, signup month, and days active in 2025. Here, month means the customer's signup month, not the month of the purchase. See the [model card](model/model_card.md) and [table and model SQL](sql/README.md#current-customer-model-queries). Items per customer, average item price, and product category were explored descriptively but excluded from this model because they are measured within the same period and form part of the outcome; age band was also explored in Part A, while the supplied model uses age as a numeric X.
+
+| Measure or coefficient | Result | Interpretation |
+|---|---:|---|
+| `r2_score` | 0.0004 | Explains almost none of the variation; not suitable for individual spend prediction |
+| Belgium indicator | +11.65 units, p = 0.1316 | Adjusted lead is not statistically significant |
+| Male (vs. female) | +9.87 units, p < 0.0001 | Strongest reported adjusted association |
+| Facebook (vs. Search) | +10.78 units, p = 0.0041 | Second strongest reported adjusted association |
+| Days active in 2025 | +0.027 units/day, p = 0.0354 | Small association, just below the 0.05 cutoff |
+
+The two smallest reported p-values among X's are for gender and Facebook acquisition. These associations apply across all countries and do not explain why Belgium's raw average is higher. A real link does not prove that X caused Y.
+
+The model does not include products purchased, so the Part A category pattern remains a candidate explanation, not a demonstrated cause. The Belgium effect is not significant after adjustment, and the model has very low predictive value.
+
+**Provenance:** These model and gap figures were supplied in `Belgium.zip` and were not independently rerun in this editing session. See [model/model_card.md](model/model_card.md) for definitions and limits.

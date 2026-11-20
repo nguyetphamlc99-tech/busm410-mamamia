@@ -13,11 +13,11 @@
 
 | Table | Columns used | Role in analysis |
 |---|---|---|
-| `users` | `id`, `country`, `traffic_source` (for CP2) | User identifier, user's recorded country, and recorded acquisition channel |
-| `order_items` | `id`, `user_id`, `created_at`, `sale_price` | Order-item identifier, user join key, year filter, and value summed |
+| `users` | `id`, `country`, `age`, `gender`, `traffic_source`, `created_at` | User identifier, recorded country, age, gender, acquisition channel, and signup timestamp |
+| `order_items` | `id`, `user_id`, `created_at`, `sale_price`, `status` | Order-item identifier, user join key, year filter, recorded item value, and current item status |
 | `products` | `id`, `category` (assumed for CP2 query 08; verify in BigQuery) | Product identifier and category label for category-purchase features |
 
-The country analysis joins `order_items.user_id` to `users.id`. The CP2 purchaser table joins `order_items.user_id` to `users.id` and left-joins `order_items.product_id` to `products.id`, reading `products.category`; verify the product fields in the live schema before running query 08. The left product join preserves order items in the spend outcome when no product row matches. Confirm the displayed column descriptions and types in BigQuery and add important documentation notes here.
+The country analysis joins `order_items.user_id` to `users.id`. The CP2 customer table in query 13 joins order items to users, filters current item statuses `Cancelled` and `Returned`, and uses user attributes plus `users.created_at` to derive signup month and days active in 2025. The older draft CP2 table also uses `products.category`; confirm those fields before running the historical queries. Confirm the live column meanings and types in BigQuery.
 
 ## Table diagram
 
