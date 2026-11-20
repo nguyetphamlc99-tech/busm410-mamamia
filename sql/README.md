@@ -1,95 +1,53 @@
 # SQL process
 
-This folder contains the SQL used to check the fields, reproduce the CP1 user-country totals, and compare U.S. sales and active-purchaser shares for the focused 2025 question. Each query starts with a short note pointing here.
+The current analysis compares Belgium with averages calculated from all country groups for 2025. The earlier queries are retained as project history; their results are not part of the current finding. Each query starts with a short note pointing here.
 
-## Query sequence
+## Current query
+
+### `06_belgium_vs_country_averages_2025.sql`
+
+Returns one row for Belgium. It reports Belgium's recorded sale-price total, active-purchaser count, sale-price value per active purchaser, the average purchaser count across all country groups, and the overall sale-price value per active purchaser.
+
+The two averages use different calculations:
+
+- **Average active purchasers per country:** the simple average of the active-purchaser counts for the country groups.
+- **Overall sale-price value per active purchaser:** the total recorded sale-price value across all country groups divided by all active purchasers. This is weighted by purchaser count.
+
+The team's screenshot from the prior all-country version shows 12 country groups. Belgium has **286** active purchasers and about **110.13** recorded sale-price units per purchaser, the highest country average shown. This is about **10.00** units (**10.0%**) above the overall average of **100.13**. The average country purchaser count is **1,959**, making Belgium **1,673** purchasers (**85.4%**) below that reference. The query was then changed to return Belgium only and add the country-count average; those changes have not yet been run in BigQuery.
+
+## Earlier queries kept for history
 
 ### `01_data_quality_checks.sql`
 
-Checks the key fields used by the analysis for duplicate IDs, missing IDs and join keys, blank country values, null or future creation timestamps, null or negative sale prices, and order items with no matching user. A second result shows row counts and latest creation time by year so the team can assess date coverage, especially 2026.
+Checks for duplicate IDs, missing IDs and join keys, blank countries, null or future timestamps, null or negative sale prices, and order items without a matching user. A second result shows row counts and latest creation time by year.
 
-**Run status:** BigQuery shows both statements completed successfully. The diagnostic statement processed **7.23 MB**; the year-coverage statement processed **1.38 MB**. The year-coverage result is transcribed below. The first statement's results are transcribed below. One check is nonzero and needs interpretation; the other nine returned zero. Do not automatically remove duplicates, blanks, or unmatched rows; first determine what they represent.
-
-**Year-coverage output:** The screenshot shows the latest `created_at` and row count by year:
-
-| Year | Order-item rows | Latest `created_at` (UTC) |
-|---:|---:|---|
-| 2026 | 66,265 | 2026-11-14 23:48:20.880067 |
-| 2025 | 39,970 | 2025-12-31 23:58:42 |
-| 2024 | 27,840 | 2024-12-31 23:52:41 |
-| 2023 | 19,254 | 2023-12-31 23:53:08 |
-| 2022 | 13,086 | 2022-12-31 23:30:25 |
-| 2021 | 8,455 | 2021-12-31 23:53:14 |
-| 2020 | 4,778 | 2020-12-31 22:47:08 |
-| 2019 | 1,401 | 2019-12-31 23:29:37 |
-
-The latest 2026 timestamp (2026-11-14 23:48:20 UTC) is later than the screenshot date (2026-11-11), so it appears future-dated relative to the run. The 2026 row is excluded from the project's year comparison because it is the current, potentially incomplete year.
-
-**Data-quality output:** The screenshot shows 1,582 future `order_items.created_at` values. Each of the other nine checks returned zero:
-
-| Check | Observed count |
-|---|---:|
-| Blank or null `users.country` | 0 |
-| Duplicate `order_items.id` | 0 |
-| Duplicate `users.id` | 0 |
-| Null or negative `order_items.sale_price` | 0 |
-| Null `order_items.created_at` | 0 |
-| Null `order_items.id` | 0 |
-| Null `order_items.user_id` | 0 |
-| Null `users.id` | 0 |
-| Order items with unmatched user | 0 |
-| Future `order_items.created_at` | 1,582 |
-
-Do not delete or filter these records automatically. Investigate why the source contains future-dated timestamps. They do not enter the 2023 or 2025 comparison unless a query's year filter changes.
+**Run status:** Both statements completed successfully. The diagnostic statement processed **7.23 MB** and the year-coverage statement processed **1.38 MB**. The checks found **1,582** future `order_items.created_at` values; the other nine checks returned zero. The year-coverage result showed **39,970** order-item rows in 2025. Do not automatically remove or filter records; investigate what they represent first.
 
 ### `02_country_revenue_by_year.sql`
 
-Reproduces the team's query: inner join `order_items.user_id = users.id`, group by `users.country` and the year of `order_items.created_at`, and sum `order_items.sale_price`. One result row is one user-country group and year. No status or return filter is applied.
-
-The team shared the output in [Google Sheets](https://docs.google.com/spreadsheets/d/1rDDExt7Uf89crvoLI5ZjTG0p1JqFMs49nnnk2eYQmJY/edit?gid=1679571377#gid=1679571377) and ran this query in BigQuery. The result screenshot shows country-year rows, including 2026; the assistant did not run the query. The job's estimated and processed bytes were not included in the screenshot.
+Earlier country-year totals from the joined source tables. Each output row represents a country group and creation year. It sums recorded item `sale_price` and does not filter status or returns.
 
 ### `03_top_three_concentration.sql`
 
-Aggregates the country-year totals, ranks countries within each year by sale-price total, and calculates the top-three total, the total across all returned country groups, top-three share, remaining-country share, and their difference in percentage points. The calculation is:
-
-- Top-three share = top-three country total ÷ all-country total × 100.
-- Remaining-country share = 100 − top-three share.
-- Difference = top-three share − remaining-country share.
-
-The team ran the ranked query in BigQuery. Its result screenshot shows 2023 top-three share **69.91%**, remaining share **30.09%**, and difference **39.83 percentage points**; for 2025 it shows **70.41%**, **29.59%**, and **40.83 percentage points**. Totals rounded to two decimals are 796,883.74 of 1,139,791.91 in 2023 and 1,680,043.89 of 2,385,947.97 in 2025. The assistant did not run the query. Review the data-quality outputs to assess missing and unmatched records.
+Earlier country-concentration analysis, retained as historical work and not used for the current Belgium finding.
 
 ### `04_time_to_sell_by_category.sql`
 
-An earlier exploratory query about elapsed days from inventory creation to sale, retained for project history. It is outside the current country revenue finding and should not be used to support the current conclusion.
+Earlier exploratory query about elapsed days from inventory creation to sale. It is outside the current analysis.
 
 ### `05_us_china_sales_vs_purchaser_share_2025.sql`
 
-Compares the United States and China during calendar year 2025. The inner query has one row per user country and calculates total recorded sale price and distinct users with at least one joined order item. The final output has one row for each focus country, with its sale-price total and share of all-country sale-price value, active-purchaser count and share, the sales-share-minus-purchaser-share difference in percentage points, and sale-price value per active purchaser. It also provides the overall average sale-price value per active purchaser across all countries. This overall average is total sale-price value divided by all active purchasers, not an average of country averages. Positive share differences mean a country's recorded sale-price share exceeds its active-purchaser share; negative differences mean it is smaller. This is a descriptive comparison, not a target or proof of a business problem.
+Legacy two-country comparison query, retained for project history only. Its results are not included in the current README, charter, or findings.
 
-**Run status:** The team ran the corrected two-row query in BigQuery. Its visible output shows China sale-price value **795,315.45**, U.S. value **529,094.11**, all-country sale-price value **2,353,813.65**, and country-specific sales shares of **33.79%** and **22.48%**, respectively. It also shows **7,910** active purchasers in China and **5,336** in the U.S. The screenshot clips the all-country active-purchaser denominator; the matching earlier output showed **23,508**, used for the approximate purchaser shares and overall per-purchaser average in `findings.md`. Based on that denominator, the weighted all-country average is about **100.13** recorded sale-price units per active purchaser. The current total differs from the earlier CP1 all-country total of **2,385,947.97** units, so rerun queries 02 and 03 with the same date filter and source state before combining results. BigQuery displayed an estimated scan of **5.87 MB**; actual processed bytes were not visible.
+## Cleaning and interpretation
 
-## Cleaning and interpretation choices
-
-- The CP1 country-revenue queries do not apply data cleaning filters. The quality-check SQL is diagnostic, not an instruction to drop rows.
-- The inner join excludes order items without a matching user. The quality check reports this so the team can decide whether it affects the results.
-- A blank or null user country may form a separate group in BigQuery. Keep it visible while checking completeness; do not silently remove it from the denominator.
-- Duplicate `order_items.id` or `users.id` values could change totals or multiply rows in the join. Inspect any duplicates before choosing a treatment.
-- The diagnostic output shows zero duplicate IDs, blank/null user country, missing IDs or join keys, unmatched users, null timestamps, and null/negative prices. It shows 1,582 future timestamps, which need investigation before deciding whether further cleaning is needed.
-- No status or return exclusion is made, so the measure is recorded item sale price, not net revenue or profit.
-- The country field is sourced from `users.country`; it is not a shipping destination.
-- The focused query uses 2025, a completed year. The earlier CP1 comparison uses 2023 and 2025; 2026 may be incomplete.
-- Do not label the results in dollars until the dataset's currency/unit is documented.
-- Google Sheets was used to view the provided output. No spreadsheet formulas were supplied; the arithmetic used for the summary is documented in `findings.md`.
+- The current query uses 2025 order-item rows joined to `users` by `order_items.user_id = users.id`.
+- The query does not filter item status or returns. Describe `sale_price` as recorded item-sale value, not net revenue or profit.
+- Country is taken from `users.country`; it is not a verified shipping destination.
+- Keep blank country groups visible when checking the denominator. Do not silently exclude groups.
+- Do not label values as dollars until the source currency/unit is confirmed.
+- Treat the comparison as descriptive. It does not establish why countries differ or prove that a business action would be profitable.
 
 ## Query cost
 
-For `01_data_quality_checks.sql`, BigQuery's job history shows 7.23 MB processed for the diagnostic statement and 1.38 MB for the year-coverage statement. These are actual processed-byte amounts shown after execution, not pre-run estimates. The editor estimates and actual bytes processed for the country revenue and concentration queries were not visible in the supplied screenshots; add them from the job details if available. A `LIMIT` does not reduce bytes scanned.
-
-For the corrected two-country query, BigQuery displayed an estimated 5.87 MB scan. The actual processed-byte amount was not visible. A `LIMIT` does not reduce bytes scanned.
-
-
-### `11_country_sale_price_per_active_purchaser_2025.sql`
-
-Returns one row per country for 2025, with recorded sale-price total, active-purchaser count, simple average active-purchaser count per country, recorded sale-price value per active purchaser, the overall all-country average, and differences from both averages. The overall sale-price average is weighted across purchasers: total recorded sale-price value divided by total active purchasers. The average purchaser count is a simple average across country groups.
-
-**Run status:** The team supplied a BigQuery screenshot from the prior query version showing 12 country rows. Belgium has **286** active purchasers and about **110.13** recorded sale-price units per purchaser, the highest country average shown; this is about **10.00** units (**10.0%**) above the overall average of **100.13**. The simple average purchaser count across the 12 countries is **1,959**, making Belgium **1,673** purchasers (**85.4%**) below that count average. Poland is lowest in sale-price value per active purchaser, at about **72.19** units, **27.94** units (**27.9%**) below the overall average, with **45** purchasers and about **3,248.36** recorded sale-price units total. The query's added purchaser-count-average columns have not been run in BigQuery. The currency is not confirmed. These comparisons are descriptive and do not explain why country averages differ.
+BigQuery job history showed **7.23 MB** processed for the diagnostic statement and **1.38 MB** for the year-coverage statement. An earlier two-country comparison showed an estimated **5.87 MB** scan. No byte estimate or processed-byte result is available yet for the Belgium-focused version of query 06. A `LIMIT` does not reduce bytes scanned.

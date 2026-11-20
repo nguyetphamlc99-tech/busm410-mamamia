@@ -1,38 +1,34 @@
-# Charter: Do Sales Contributions Match Purchaser Counts?
+# Charter: Belgium Purchasers and Sale-Price Value
 
 ## The question in plain language
 
-In 2025, did the United States or China contribute a much larger share of recorded item-sale value than its share of active purchasers?
+In 2025, did Belgium have fewer active purchasers than the average country, while its recorded sale-price value per purchaser was above the overall average?
 
-We answer this by comparing two percentages for each country:
+We compare two measures:
 
-- **Share of recorded item-sale value:** that country's sum of `sale_price` divided by the sum for all countries.
-- **Share of active purchasers:** the number of users in that country who made at least one 2025 purchase, divided by the number of active purchasers across all countries.
-- **Difference:** item-sale-value share minus active-purchaser share, in percentage points.
+- **Belgium's active-purchaser count** with the simple average number of active purchasers across the country groups in the data.
+- **Belgium's recorded sale-price value per active purchaser** with the overall average across all active purchasers.
 
-If the difference is positive, the country's share of item-sale value is higher than its share of purchasers. If it is negative, the value share is lower. A difference near zero means the shares are about the same. We also compare each country's item-sale value per active purchaser with the overall average: total item-sale value across all countries divided by all active purchasers. This is a weighted average across purchasers, not an average of country averages. These comparisons are not targets or industry benchmarks.
-
-**Important:** `sale_price` is summed from order-item rows. This measures recorded item-sale value, not the number of transactions. The currency is not confirmed, and the query does not remove returns or canceled items.
+These averages are different. The country-count average gives each country equal weight. The overall sale-price average is total recorded `sale_price` divided by the total number of active purchasers, so countries with more purchasers contribute more to it.
 
 ## Who may use this and why
 
-A marketing or market-planning manager could use the comparison to decide whether to look more closely at purchaser numbers or spending patterns in these two markets. The current figures do not prove a problem or support a budget change. The data does not include profit, marketing costs, market potential, or a target country mix.
+A market-planning manager could use this comparison to decide whether Belgium's relatively small purchaser base and higher recorded value per purchaser deserve further investigation. The result does not explain the reason for the difference or support a budget decision by itself.
 
 ## Scope
 
 - **Dataset:** `bigquery-public-data.thelook_ecommerce`
 - **Tables:** `order_items` and `users`
 - **Period:** January 1 through December 31, 2025, based on `order_items.created_at`.
-- **Focus countries:** `United States` and `China`, as recorded in `users.country`.
-- **Sales measure:** Sum of `order_items.sale_price`; this is recorded item sale-price value, not confirmed dollars, net revenue, or profit.
-- **Active purchaser:** A distinct matched `users.id` with at least one joined order-item row in 2025.
-- **Comparison group:** All user-country groups returned by the same inner join; the all-country denominators include both focus countries.
+- **Focus:** Belgium, compared with all country groups returned by the same inner join.
+- **Recorded sale-price value:** Sum of `order_items.sale_price`; its currency is not confirmed.
+- **Active purchaser:** A distinct matched user with at least one joined 2025 order-item row.
 - **Join:** `order_items.user_id = users.id`.
-- The query does not filter item status or returns. It measures recorded sale-price value associated with the user's recorded country, not verified shipping destination.
+- The query does not filter order-item status or returns. Country is the user's recorded country, not a verified shipping destination.
 
 ## What success looks like
 
-- Report sales share, active-purchaser share, share gap, and sale-price value per active purchaser for the U.S. and China, alongside the all-country average.
-- Check that both countries' figures use the same 2025 period and joined population.
-- Reconcile the focused query's all-country sales total with the earlier CP1 output before finalizing the comparison.
-- Treat any difference as descriptive. Do not call it a business shortfall or recommend budget changes without a target and evidence about costs, profit, or market potential.
+- Report Belgium's active-purchaser count and recorded sale-price value per active purchaser.
+- Compare its purchaser count with the simple average country count and its per-purchaser value with the overall weighted average.
+- Keep the interpretation descriptive. Do not claim a cause, profitability, or a business shortfall without more evidence.
+- Reconcile the all-country total with the earlier CP1 output before combining results from different runs.

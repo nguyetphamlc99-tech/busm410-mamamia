@@ -1,82 +1,34 @@
-# Findings: U.S. and China Sales Contribution
+# Findings: Belgium Purchasers and Sale-Price Value, 2025
 
-## 1. The question
+## The question
 
-In 2025, did the United States or China account for a much bigger share of recorded item-sale value than of active purchasers?
+Does Belgium have a smaller active-purchaser base than the typical country in this dataset, while showing higher recorded sale-price value per purchaser than the overall average?
 
-The team ran the corrected two-country query [`sql/05_us_china_sales_vs_purchaser_share_2025.sql`](sql/05_us_china_sales_vs_purchaser_share_2025.sql) in BigQuery. It returns one row for each focus country with recorded sale-price total, share of all-country sale-price value, active-purchaser count and share, difference between the two shares, and recorded sale-price per active purchaser.
+## What the result shows
 
-| Measure | United States | China | All-country reference |
-|---|---:|---:|---:|
-| Sum of item `sale_price` values (currency not confirmed) | 529,094.11 | 795,315.45 | 2,353,813.65 total |
-| Share of all-country item-sale value | 22.48% | 33.79% | 100% |
-| Active purchasers | 5,336 | 7,910 | 23,508* total |
-| Share of all-country active purchasers | About 22.70% | About 33.65% | 100% |
-| Sale-value share minus purchaser share | About −0.22 percentage points | About +0.14 percentage points | 0 percentage points |
-| Item-sale value per active purchaser | About 99.16 units | About 100.55 units | About 100.13 units average |
-
-\*The all-country active-purchaser count of 23,508 was visible in the matching U.S.-only run; the latest screenshot clipped that denominator column. The shares, differences, and all-country average above use that count and are rounded. The latest screenshot shows the country-specific sales-share column, so the earlier issue where the U.S. share repeated on the China row is resolved.
-
-## 2. What the numbers mean
-
-The percentages use the sum of item `sale_price` values. They are **not** percentages of the number of transactions. China's item-sale-value share is about 0.14 percentage points above its purchaser share. The U.S. share is about 0.22 points below. Those differences are small, so this result does not show a clear mismatch between each country's share of value and its share of purchasers.
-
-The all-country average is total recorded item-sale value divided by all active purchasers. It is about 100.13 units per purchaser. China is about 0.42 units above this average; the U.S. is about 0.97 units below it. This average is weighted by the number of purchasers in each country; it is not the simple average of country averages. The currency is not confirmed, so these figures should not be called dollars.
-
-### Belgium: fewer purchasers, higher value per purchaser
-
-Belgium has the highest sale-price value per active purchaser in the 12-country result, even though it has relatively few active purchasers:
+The team's BigQuery screenshot shows results for 12 country groups. Belgium had 286 active purchasers and the highest recorded sale-price value per active purchaser in the results.
 
 | Measure | Belgium | Comparison average | Difference |
 |---|---:|---:|---:|
 | Active purchasers | 286 | 1,959 per country | 1,673 fewer (85.4% below) |
-| Sale-price value per active purchaser | About 110.13 units | About 100.13 units across all purchasers | About 10.00 units higher (10.0% above) |
+| Recorded sale-price value per active purchaser | About 110.13 units | About 100.13 units per purchaser overall | About 10.00 units higher (10.0% above) |
 | Recorded sale-price total | About 31,497.54 units | — | — |
 
-The two averages are different: 1,959 is the simple average number of active purchasers across the 12 countries, while 100.13 is total recorded sale-price value divided by all 23,508 active purchasers. The country-count average is pulled upward by large countries such as China and the United States, so it is a reference point, not a target. Belgium's 286 purchasers are about 1.22% of all active purchasers. This pattern may be worth investigating, but it does not show whether Belgium can attract more purchasers or whether doing so would be profitable. The latest query version adds the country-count average to [`sql/11_country_sale_price_per_active_purchaser_2025.sql`](sql/11_country_sale_price_per_active_purchaser_2025.sql); those added columns have not yet been run in BigQuery.
+The two averages have different meanings:
 
-### Poland compared with the all-country average
+- **1,959 active purchasers per country** is the simple average of the 12 country-level purchaser counts. It is pulled upward by the largest countries, so it is a reference point, not a target.
+- **100.13 sale-price units per active purchaser** is the overall total recorded sale-price value divided by all 23,508 active purchasers. It is weighted by purchaser count and includes Belgium.
 
-In the country-by-country result, Poland had the lowest sale-price value per active purchaser among the 12 countries shown:
+Belgium's 286 active purchasers are about 1.22% of all active purchasers. The pattern is worth examining: Belgium has a small purchaser base by the country-count average, but higher recorded sale-price value per purchaser than the overall average. This does not show why, prove a growth opportunity, or establish that expanding the purchaser base would be profitable.
 
-| Measure | Poland | All-country average | Poland's difference |
-|---|---:|---:|---:|
-| Recorded sale-price value per active purchaser | About 72.19 units | About 100.13 units | About 27.94 units lower (27.9% below average) |
-| Active purchasers | 45 | 23,508* | — |
-| Recorded sale-price total | About 3,248.36 units | — | — |
+The currency of `sale_price` is not confirmed. The measure sums recorded order-item sale prices and does not remove returns or canceled items, so it should not be described as confirmed dollars, net revenue, or profit.
 
-This means Poland's active purchasers had lower recorded item-sale value per person in this 2025 result. It does not show why, prove that Poland is underperforming, or justify a business action. The Poland group has 45 active purchasers, and the currency is unconfirmed. The country-by-country result is reproducible with [`sql/11_country_sale_price_per_active_purchaser_2025.sql`](sql/11_country_sale_price_per_active_purchaser_2025.sql).
+## Reproduction
 
-## 3. Who could use this and why
+The country-by-country result came from a query the team ran in BigQuery. The updated Belgium-focused query is [`sql/06_belgium_vs_country_averages_2025.sql`](sql/06_belgium_vs_country_averages_2025.sql). It returns Belgium's values alongside both comparison averages. The added country-count-average columns have not yet been rerun in BigQuery.
 
-A marketing or market-planning manager could use this comparison to decide whether more research into purchaser numbers or spending patterns is needed. These results alone do not establish a business problem or support a budget change: the data has no profit, marketing cost, market potential, or target country mix.
+The latest all-country sale-price total shown was 2,353,813.65 units. This differs from the earlier CP1 total, so reconcile the source query totals before combining results across runs.
 
-## 4. Earlier CP1 context
+## Who may use this and why
 
-In the earlier CP1 results, China and the United States were two of the three highest-sale-price countries in 2025:
-
-| Earlier CP1 result | China | United States |
-|---|---:|---:|
-| Recorded sale-price total, 2025 | 786,711.91 units | 546,520.53 units |
-
-The same CP1 summary reported a 2025 all-country total of **2,385,947.97 units**, compared with **2,353,813.65 units** in the current query 05 run. These totals do not reconcile. Rerun queries 02 and 03 with the same date filter and source state before combining the older CP1 results with this comparison.
-
-The CP1 top-three summary found that China, the United States, and Brasil together accounted for 70.41% of recorded sale-price value in 2025, versus 29.59% for all remaining country groups. Their share was 69.91% in 2023. This concentration result motivated the current comparison; it does not establish a business problem.
-
-**Source:** The team ran [`sql/02_country_revenue_by_year.sql`](sql/02_country_revenue_by_year.sql) and [`sql/03_top_three_concentration.sql`](sql/03_top_three_concentration.sql) in BigQuery. The result screenshots and [team Google Sheets output](https://docs.google.com/spreadsheets/d/1rDDExt7Uf89crvoLI5ZjTG0p1JqFMs49nnnk2eYQmJY/edit?gid=1679571377#gid=1679571377) agree at the displayed precision. The assistant did not run those queries.
-
-## 5. Chart
-
-The existing chart visualizes the earlier top-three comparison, not the focused U.S.–China comparison.
-
-![Earlier CP1 top-three concentration chart](visuals/gap_chart.png)
-
-## Limits and next checks
-
-- The latest query 05 output is visible and the U.S.–China comparison is calculated. Record actual processed bytes if available in BigQuery job details.
-- Rerun queries 02 and 03 for 2025 and reconcile their all-country total with query 05.
-- The query includes joined order-item rows without filtering item status or returns. Interpret `sale_price` as recorded item sale-price value, not net revenue or profit.
-- Country comes from `users.country`, not verified shipping destination. The inner join excludes unmatched users; the existing data-quality result reported zero unmatched users and blank/null countries, but the team should confirm the checks remain appropriate.
-- The source diagnostic reported 1,582 future-dated `created_at` values. The focused query restricts the period to the completed 2025 calendar year; investigate the future timestamps before applying other filters.
-- Confirm the `sale_price` unit/currency before describing values as dollars.
-- CP2 modeling still needs a deliberate outcome and pre-outcome predictors. Customer-level recorded spend may be a candidate outcome, but it would not directly explain market risk or prove causation.
+A market-planning manager could use this result to decide whether Belgium merits more research. The data does not include marketing cost, profit, market potential, or a growth target, so it cannot support a budget decision on its own.

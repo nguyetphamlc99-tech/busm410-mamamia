@@ -7,37 +7,31 @@
 - **Dataset:** `bigquery-public-data.thelook_ecommerce`
 - **BigQuery project ID:** `mamamia-busm-410`
 - **Repository:** `nguyetphamlc99-tech/busm410-mamamia`
-- **Current analysis:** Compare the United States and China in 2025 on recorded sale-price share, active-purchaser share, and recorded sale-price value per active purchaser.
+- **Current analysis:** Compare Belgium's 2025 active-purchaser count with the average country count, and its recorded sale-price value per purchaser with the overall purchaser-weighted average.
 
 ### Tables, columns, and grain
 
-- `order_items`: analysis uses `id`, `user_id`, `created_at`, and `sale_price`. One source row is an order-item record; the revenue query aggregates these records by year of `created_at`.
-- `users`: analysis uses `id` and `country`. The country is the user's recorded country, not confirmed shipping destination.
+- `order_items`: analysis uses `id`, `user_id`, `created_at`, and `sale_price`. One source row is an order-item record.
+- `users`: analysis uses `id` and `country`. Country is the user's recorded country, not a confirmed shipping destination.
 - Join: `order_items.user_id = users.id`.
-- CP1 revenue output grain: one user-country group in one order-item creation year.
-- Focused 2025 comparison: aggregate sale-price value and distinct active purchasers by user country, then return one summary row for the United States against all joined country groups.
+- Current query grain: one row for Belgium, compared with averages calculated from all joined country groups.
 - Confirm exact column descriptions and types in BigQuery before relying on them. See [Other/README.md](Other/README.md).
 
-### Prior CP1 results and focused question
+### Current result and prior CP1 context
 
-The team ran the numbered revenue queries in BigQuery. The assistant did not run them. The result screenshots show the 2023 and 2025 top-three summary below; the rounded figures agree with [the team's Google Sheet](https://docs.google.com/spreadsheets/d/1rDDExt7Uf89crvoLI5ZjTG0p1JqFMs49nnnk2eYQmJY/edit?gid=1679571377#gid=1679571377) at the displayed precision.
+The team's BigQuery screenshot shows 12 country groups. Belgium has 286 active purchasers, the highest recorded sale-price value per active purchaser in the displayed results (about 110.13 units), and total recorded sale-price value of about 31,497.54 units. The overall purchaser-weighted average is about 100.13 units per active purchaser. The simple average purchaser count across the 12 country groups is 1,959. See [findings.md](findings.md).
 
-| Year | Top three (China, United States, Brasil) | Total across joined country groups | Top-three share | Other-country share |
-|---:|---:|---:|---:|---:|
-| 2023 | 796,883.74 | 1,139,791.91 | 69.91% | 30.09% |
-| 2025 | 1,680,043.89 | 2,385,947.97 | 70.41% | 29.59% |
-
-The earlier top-three comparison is context for the current question, not the current gap definition. The latest BigQuery screenshot shows the corrected two-row result: China sale-price value 795,315.45 (33.79% of total) and 7,910 active purchasers; U.S. sale-price value 529,094.11 (22.48%) and 5,336 active purchasers. The all-country sale-price total is 2,353,813.65. The screenshot clips the all-country active-purchaser denominator; the earlier matching output showed 23,508. The current total differs from the earlier CP1 result of 2,385,947.97; rerun queries 02 and 03 under the same source state/date filter before treating results as reconciled.
+The latest all-country sale-price total is 2,353,813.65 units, which differs from an earlier CP1 output. Rerun queries 02 and 03 under the same date filter and source state before combining those totals.
 
 ### Cleaning and interpretation rules
 
 - Use `sale_price` as recorded in the source. Do not call the result dollars until the currency/unit is confirmed in dataset documentation.
-- The CP1 and focused queries include every joined order-item row; they have no status or return filter. Describe the metric as summed recorded order-item `sale_price`, not net revenue or profit.
+- The country and focused queries include every joined order-item row; they have no status or return filter. Describe the metric as summed recorded order-item `sale_price`, not net revenue or profit.
 - The query uses an inner join. Check unmatched `user_id` values and country blanks before interpreting totals.
 - Both data-quality statements ran successfully (7.23 MB and 1.38 MB processed). The year-coverage result shows 66,265 rows in 2026 and a latest timestamp of 2026-11-14 23:48:20 UTC; the screenshot is dated 2026-11-11, so this timestamp appears future-dated. The diagnostic output shows 1,582 future `created_at` values and zero for the other nine checks. Investigate the future timestamps; do not filter them automatically.
 - Do not remove or deduplicate records without reviewing what the records represent and documenting the rule.
-- Use the completed 2025 calendar year for the focused comparison. The historical CP1 comparison also includes 2023; omit 2026 because it may be partial.
-- Treat the analysis as descriptive. It does not establish why revenue is concentrated or quantify a financial loss.
+- Use the completed 2025 calendar year for the focused comparison. Omit 2026 from annual comparisons because it may be partial.
+- Treat the analysis as descriptive. It does not establish why countries differ or quantify a financial loss.
 
 ## Before starting substantial work
 

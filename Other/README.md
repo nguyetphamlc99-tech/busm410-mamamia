@@ -15,7 +15,7 @@
 | `users` | `id`, `country` | User identifier and user's recorded country |
 | `order_items` | `id`, `user_id`, `created_at`, `sale_price` | Order-item identifier, user join key, year filter, and value summed |
 
-The analysis joins `order_items.user_id` to `users.id`. The queries use an inner join, so order items without a matched user are excluded. The CP1 country-year query has one user-country group per year of `order_items.created_at`. The focused 2025 query aggregates recorded sale-price value and distinct active purchasers by user country, then reports the United States and China's shares of the all-country totals. The team should confirm the displayed column descriptions and types in BigQuery and add any important documentation notes here.
+The analysis joins `order_items.user_id` to `users.id`. The queries use an inner join, so order items without a matched user are excluded. The CP1 country-year query has one user-country group per year of `order_items.created_at`. The current 2025 query compares Belgium's active-purchaser count and sale-price value per purchaser with averages calculated across all joined country groups. The team should confirm the displayed column descriptions and types in BigQuery and add any important documentation notes here.
 
 ## Table diagram
 
