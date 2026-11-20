@@ -23,6 +23,18 @@ The percentages use the sum of item `sale_price` values. They are **not** percen
 
 The all-country average is total recorded item-sale value divided by all active purchasers. It is about 100.13 units per purchaser. China is about 0.42 units above this average; the U.S. is about 0.97 units below it. This average is weighted by the number of purchasers in each country; it is not the simple average of country averages. The currency is not confirmed, so these figures should not be called dollars.
 
+### Belgium: fewer purchasers, higher value per purchaser
+
+Belgium has the highest sale-price value per active purchaser in the 12-country result, even though it has relatively few active purchasers:
+
+| Measure | Belgium | Comparison average | Difference |
+|---|---:|---:|---:|
+| Active purchasers | 286 | 1,959 per country | 1,673 fewer (85.4% below) |
+| Sale-price value per active purchaser | About 110.13 units | About 100.13 units across all purchasers | About 10.00 units higher (10.0% above) |
+| Recorded sale-price total | About 31,497.54 units | — | — |
+
+The two averages are different: 1,959 is the simple average number of active purchasers across the 12 countries, while 100.13 is total recorded sale-price value divided by all 23,508 active purchasers. The country-count average is pulled upward by large countries such as China and the United States, so it is a reference point, not a target. Belgium's 286 purchasers are about 1.22% of all active purchasers. This pattern may be worth investigating, but it does not show whether Belgium can attract more purchasers or whether doing so would be profitable. The latest query version adds the country-count average to [`sql/11_country_sale_price_per_active_purchaser_2025.sql`](sql/11_country_sale_price_per_active_purchaser_2025.sql); those added columns have not yet been run in BigQuery.
+
 ### Poland compared with the all-country average
 
 In the country-by-country result, Poland had the lowest sale-price value per active purchaser among the 12 countries shown:

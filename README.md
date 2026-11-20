@@ -26,6 +26,8 @@ China accounts for 33.79% of recorded item-sale value and about 33.65% of active
 
 An additional all-country comparison found Poland lowest among the 12 countries shown, at about 72.19 recorded sale-price units per active purchaser versus the overall average of about 100.13. Poland is about 27.94 units (27.9%) below that average, based on 45 active purchasers. This is a descriptive result, not proof of a cause or business problem. See [`sql/11_country_sale_price_per_active_purchaser_2025.sql`](sql/11_country_sale_price_per_active_purchaser_2025.sql).
 
+The same comparison shows Belgium with the highest sale-price value per active purchaser (about 110.13) and 286 active purchasers, versus the simple average of 1,959 purchasers per country. Belgium is about 10.00 sale-price units per purchaser above the all-country average, but this descriptive result does not explain why.
+
 The total item-sale value in this run does not match the earlier CP1 total, so the result is still provisional. See [findings.md](findings.md) for details.
 
 ## Explore the work
